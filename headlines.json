@@ -1,0 +1,76 @@
+{
+ "rows": [
+  {
+   "id": "h9",
+   "date": "2026-11-22",
+   "topic": "流動性",
+   "title": "比特幣週末一度跌破5.6萬美元後反彈至約5.9萬，加密市場槓桿仍未出清",
+   "source_name": "CoinCodex",
+   "source_url": "https://coincodex.com/article/95777/daily-market-update-for-november-22-2026/"
+  },
+  {
+   "id": "h11",
+   "date": "2026-11-21",
+   "topic": "流動性",
+   "title": "分析指出中東航運受阻與海灣資金收縮，疊加AI估值重估，是這波拋售的兩大推手",
+   "source_name": "Bill Cara",
+   "source_url": "https://billcaradotcom.substack.com/p/the-november-2026-market-rout-liquidity"
+  },
+  {
+   "id": "h4",
+   "date": "2026-11-21",
+   "topic": "利率",
+   "title": "Citi：市場訊號顯示現行利率過高，12月後升息空間可能縮小",
+   "source_name": "24/7 Wall St.",
+   "source_url": "https://247wallst.com/investing/2026/11/21/this-stock-market-selloff-could-block-the-feds-rate-hikes/"
+  },
+  {
+   "id": "h10",
+   "date": "2026-11-20",
+   "topic": "AI槓桿",
+   "title": "傳美國證管會檢視輝達會計處理，輝達單日重挫約14%，拖累標普進入修正",
+   "source_name": "Ted Pillows 市場報告",
+   "source_url": "https://tedpillows.substack.com/p/crypto-and-finance-market-report-13a"
+  },
+  {
+   "id": "h1",
+   "date": "2026-11-20",
+   "topic": "股市",
+   "title": "美股重挫：標普、道瓊進入修正，那指年內漲幅全數回吐",
+   "source_name": "中央社",
+   "source_url": "https://cna.com.tw/news/afe/202611210047.aspx"
+  },
+  {
+   "id": "h2",
+   "date": "2026-11-20",
+   "topic": "流動性",
+   "title": "台股跌2,393點收36,033點；金管會加碼限空首日，跌停股掛賣無人承接",
+   "source_name": "口袋學堂",
+   "source_url": "https://www.pocket.tw/school/articles/article-mwomd7rf/"
+  },
+  {
+   "id": "h3",
+   "date": "2026-11-20",
+   "topic": "流動性",
+   "title": "VIX收35.89創3月來新高，黃金同步重挫至14.5個月低點",
+   "source_name": "Capp Notes",
+   "source_url": "https://cappnotes.substack.com/p/closing-look-friday-november-20-2026"
+  },
+  {
+   "id": "h5",
+   "date": "2026-11-18",
+   "topic": "利率",
+   "title": "Fed 10月會議紀錄：官員認為可能需進一步升息，並將AI需求列為通膨風險",
+   "source_name": "自由財經",
+   "source_url": "https://ec.ltn.com.tw/article/breakingnews/5645706"
+  },
+  {
+   "id": "h6",
+   "date": "2026-11-17",
+   "topic": "AI槓桿",
+   "title": "Fed理事巴爾將AI投資的債務槓桿與連鎖拋售風險納入金融穩定討論",
+   "source_name": "新浪財經",
+   "source_url": "https://cj.sina.com.cn/articles/view/1704103183/65928d0f0200bi2tc"
+  }
+ ]
+}

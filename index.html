@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>全球市場風險監控</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fg: #1f1e1c; --muted: #6b6862; --bg: #faf9f6; --panel: #ffffff; --line: #e6e3dc; --track: #ece9e2;
+  --bad: #c2412d; --warn: #b7791f; --ok: #2f7d4f; --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --fg: #ecebe8; --muted: #a29f98; --bg: #1b1a18; --panel: #24231f; --line: #3a3833; --track: #34322d;
+    --bad: #e8705c; --warn: #e0a84a; --ok: #5fbf85; }
+}
+* { box-sizing: border-box; min-width: 0; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 "Inter", "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif; font-feature-settings: "tnum"; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 14px 14px 40px; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-weight: 700; font-size: 20px; margin: 0; letter-spacing: .02em; }
+h2 { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
+a { color: inherit; }
+.sub { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
+.head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.head-l { min-width: 0; }
+.btns { display: flex; gap: 6px; flex: none; }
+button, .btn { font: inherit; font-size: 12px; padding: 5px 9px; white-space: nowrap; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; text-decoration: none; }
+button:hover, .btn:hover { border-color: var(--muted); }
+button:disabled { opacity: .6; cursor: default; }
+.hero { display: flex; flex-direction: column; gap: 8px; }
+.verdict { display: flex; align-items: center; gap: 6px 14px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
+.verdict.red { border-left-color: var(--bad); } .verdict.yellow { border-left-color: var(--warn); } .verdict.green { border-left-color: var(--ok); }
+.label { font-size: 12px; color: var(--muted); }
+.level { font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: .04em; }
+.level.red, .c-red { color: var(--bad); } .level.yellow, .c-yellow { color: var(--warn); } .level.green, .c-green { color: var(--ok); }
+.counts { display: flex; gap: 12px; font-size: 13px; margin-left: auto; }
+.counts b { font-size: 16px; margin-right: 2px; }
+.key { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 7px 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; align-items: baseline; }
+.kpi-name { grid-column: 1 / 3; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi-val { font-size: 17px; font-weight: 700; line-height: 1.3; white-space: nowrap; }
+.unit { font-size: 11px; color: var(--muted); margin-left: 2px; font-weight: 400; }
+.chg { font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+.chg.down { color: var(--bad); } .chg.up { color: var(--ok); } .chg.flat { color: var(--muted); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; margin-top: 5px; }
+.dot.red { background: var(--bad); } .dot.yellow { background: var(--warn); } .dot.green { background: var(--ok); }
+.old { font-size: 12px; color: var(--warn); font-weight: 400; margin-left: 4px; }
+.eq-row { display: grid; grid-template-columns: minmax(5.5em, 1fr) 6.5em 5.5em minmax(40px, 1.2fr); gap: 12px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.eq-name { font-weight: 600; }
+.eq-head { padding: 0 0 6px; font-size: 12px; color: var(--muted); }
+.eq-head span:nth-child(2), .eq-head span:nth-child(3) { text-align: right; }
+.eq-date { text-align: right; font-size: 12px; color: var(--muted); }
+.eq-price { text-align: right; font-weight: 600; }
+.eq-row .chg { text-align: right; font-size: 14px; }
+.track { height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
+.fill { display: block; height: 100%; border-radius: 4px; }
+.fill.down { background: var(--bad); } .fill.up { background: var(--ok); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.bar h2 { margin: 0; }
+select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); column-gap: 28px; }
+.item { display: grid; grid-template-columns: 8px minmax(0, 1fr) 6.2em 2.6em 5em; column-gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.item .dot { margin-top: 0; }
+.item-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-val { font-weight: 600; white-space: nowrap; text-align: right; }
+.item-unit { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.item .chg { text-align: right; }
+.note { grid-column: 2 / 6; font-size: 12px; color: var(--muted); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.note.open { white-space: normal; }
+.src { margin-left: 6px; }
+.cal { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cal td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.cal td.t { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; width: 1%; }
+.cal td.t b { color: var(--fg); font-weight: 600; margin-right: 4px; }
+.cal td.n { white-space: nowrap; width: 1%; text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); padding-right: 12px; }
+.cal td.n.soon { color: var(--warn); font-weight: 600; }
+.cal td.n.today { color: var(--bad); font-weight: 600; }
+.event { font-weight: 600; }
+.why { font-size: 12px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
+ul.news { list-style: none; margin: 0; padding: 0; }
+ul.news li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
+.date { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; margin-right: 8px; }
+.more { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 8px 0; text-decoration: underline; }
+details { color: var(--muted); font-size: 13px; line-height: 1.7; }
+summary { cursor: pointer; color: var(--fg); }
+.empty { color: var(--muted); font-size: 13px; }
+@media (max-width: 640px) {
+  .key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .item { grid-template-columns: 8px minmax(0, 1fr) 5.8em 2.4em 4.6em; column-gap: 6px; }
+  .eq-row { grid-template-columns: minmax(4.5em, 1fr) 6.2em 4.8em; gap: 8px; }
+  .track, .eq-sp { display: none; }
+  .list { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="head">
+      <h1>全球市場風險監控</h1>
+      <div class="btns">
+        <button id="reload" type="button">重新載入</button>
+        <a id="run-update" class="btn" target="_blank" rel="noopener" hidden>抓新數據</a>
+      </div>
+    </div>
+    <p class="sub">資料日期 <b id="asof">—</b>（括號內為日期不同的項目）· 更新 <span id="updated">—</span> · 讀取 <span id="loaded">—</span> <span id="status" aria-live="polite"></span></p>
+  </header>
+
+  <section class="hero">
+    <div class="verdict" id="verdict">
+      <span class="label">整體風險</span>
+      <span class="level" id="level">—</span>
+      <span class="counts">
+        <span class="c-red"><b id="n-red">—</b>紅</span>
+        <span class="c-yellow"><b id="n-yellow">—</b>黃</span>
+        <span class="c-green"><b id="n-green">—</b>綠</span>
+      </span>
+    </div>
+    <div class="key" id="key" aria-label="四大重點指標"></div>
+  </section>
+
+  <section>
+    <h2>主要股市</h2>
+    <div class="eq-row eq-head"><span>指數</span><span>最新價格</span><span>漲跌</span><span class="eq-sp"></span></div>
+    <div id="eq"></div>
+  </section>
+
+  <section>
+    <h2>接下來要注意（台灣時間）</h2>
+    <div id="cal"></div>
+  </section>
+
+  <section>
+    <div class="bar">
+      <h2>指標燈號</h2>
+      <select id="filter" aria-label="篩選指標">
+        <option value="alert">只看紅燈與黃燈</option>
+        <option value="">全部指標</option>
+        <option>股市</option><option>恐慌與流動性</option><option>利率與央行</option><option>避險與商品</option><option>AI槓桿</option>
+      </select>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <section>
+    <h2>近期新聞</h2>
+    <ul class="news" id="news"></ul>
+  </section>
+
+  <details>
+    <summary>燈號怎麼判斷、資料從哪來</summary>
+    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，行事曆在 calendar.json。點說明文字可展開全文。這是市場數據與新聞整理，不構成投資建議。</p>
+  </details>
+</div>
+
+<script>
+{
+const SIG = { red: '紅燈', yellow: '黃燈', green: '綠燈' };
+const LEVEL = { '高風險': 'red', '偏高': 'yellow', '正常': 'green' };
+const KEY = ['vix', 'us10y', 'twii', 'fed_hike'];
+const $ = (id) => document.getElementById(id);
+const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+const safeUrl = (u) => (typeof u === 'string' && /^https?:\/\//.test(u) ? u : null);
+const link = (url, text) => { const u = safeUrl(url); if (!u) return mk('span', '', text); const a = mk('a', '', text); a.href = u; a.target = '_blank'; a.rel = 'noopener'; return a; };
+const fmt = (v) => (v === null || v === undefined || v === '' || !isFinite(Number(v)) ? '—' : Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 }));
+const chg = (r) => {
+  const c = r.change === null || r.change === undefined || r.change === '' ? null : Number(r.change);
+  const t = c === null ? '' : (c > 0 ? '+' : '') + (r.change_unit === '%' ? c.toFixed(2) : String(c)) + (r.change_unit || '');
+  return mk('span', 'chg ' + (c === null || c === 0 ? 'flat' : c < 0 ? 'down' : 'up'), t);
+};
+const fetchJSON = (p) => fetch(p + '?t=' + Date.now()).then((r) => { if (!r.ok) throw new Error(p); return r.json(); });
+const getJSON = (p) => fetchJSON(p);
+const daysUntil = (s) => {
+  const p = String(s).split('-').map(Number); if (p.length !== 3) return null;
+  const tw = new Date(Date.now() + 8 * 3600e3);
+  return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - Date.UTC(tw.getUTCFullYear(), tw.getUTCMonth(), tw.getUTCDate())) / 864e5);
+};
+const twNow = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 16).replace('T', ' ').replace('-', '/');
+const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
+
+let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '';
+const md = (d) => String(d || '').slice(5).replace('-', '/');
+// 資料日期：多數指標的日期（同票取較新）
+function refDate() {
+  const n = {}; IND.forEach((r) => { if (r.as_of) n[r.as_of] = (n[r.as_of] || 0) + 1; });
+  return Object.keys(n).sort((a, b) => n[b] - n[a] || b.localeCompare(a))[0] || '';
+}
+const nameWithDate = (cls, r) => { const e = mk('span', cls, r.name); if (r.as_of && REF && r.as_of !== REF) e.append(mk('span', 'old', '(' + md(r.as_of) + ')')); return e; };
+
+function drawSummary() {
+  const n = (s) => IND.filter((r) => r.signal === s).length;
+  ['red', 'yellow', 'green'].forEach((s) => { $('n-' + s).textContent = n(s); });
+  const share = IND.length ? n('red') / IND.length : 0;
+  const level = share >= 0.5 ? '高風險' : share >= 0.25 ? '偏高' : '正常';
+  $('level').textContent = IND.length ? level : '—';
+  $('level').className = 'level ' + (IND.length ? LEVEL[level] : '');
+  $('verdict').className = 'verdict ' + (IND.length ? LEVEL[level] : '');
+  const box = $('key'); box.replaceChildren();
+  KEY.map((id) => IND.find((r) => r.id === id)).filter(Boolean).forEach((r) => {
+    const k = mk('div', 'kpi');
+    const name = mk('span', 'kpi-name'); const dot = mk('span', 'dot ' + (r.signal || '')); dot.title = SIG[r.signal] || '';
+    name.append(mk('span', '', r.name), dot);
+    const v = mk('div'); v.append(mk('span', 'kpi-val', fmt(r.value))); if (r.unit) v.append(mk('span', 'unit', r.unit));
+    k.append(name, v, chg(r)); box.appendChild(k);
+  });
+}
+
+function drawEq() {
+  const box = $('eq'); box.replaceChildren();
+  const rows = IND.filter((r) => r.group === '股市').sort((a, b) => Number(a.change ?? 0) - Number(b.change ?? 0));
+  if (!rows.length) return box.appendChild(mk('p', 'empty', '沒有股市資料'));
+  const maxAbs = Math.max(1, ...rows.map((r) => Math.abs(Number(r.change) || 0)));
+  rows.forEach((r) => {
+    const c = Number(r.change) || 0;
+    const row = mk('div', 'eq-row');
+    const track = mk('span', 'track'); track.setAttribute('aria-hidden', 'true');
+    const f = mk('span', 'fill ' + (c < 0 ? 'down' : 'up')); f.style.width = (Math.abs(c) / maxAbs * 100) + '%'; track.append(f);
+    row.append(nameWithDate('eq-name', r), mk('span', 'eq-price', fmt(r.value)), chg(r), track);
+    box.appendChild(row);
+  });
+}
+
+function drawList() {
+  const box = $('list'); box.replaceChildren();
+  const order = { red: 0, yellow: 1, green: 2 };
+  const rows = IND.filter((r) => (filter === 'alert' ? r.signal === 'red' || r.signal === 'yellow' : !filter || r.group === filter))
+    .sort((a, b) => (order[a.signal] ?? 3) - (order[b.signal] ?? 3));
+  rows.forEach((r) => {
+    const it = mk('div', 'item');
+    const dot = mk('span', 'dot ' + (r.signal || '')); dot.title = SIG[r.signal] || '';
+    const v = mk('span', 'item-val', fmt(r.value));
+    const note = mk('div', 'note', r.note || '');
+    const src = mk('span', 'src');
+    src.append(document.createTextNode(r.manual ? '· 手動 · ' : '· '), link(r.source_url, r.source_name || '來源'));
+    note.append(src);
+    note.addEventListener('click', (e) => { if (e.target.tagName !== 'A') note.classList.toggle('open'); });
+    it.append(dot, nameWithDate('item-name', r), v, mk('span', 'item-unit', r.unit || ''), chg(r), note);
+    box.appendChild(it);
+  });
+  if (!rows.length) box.appendChild(mk('p', 'empty', filter === 'alert' ? '目前沒有紅燈或黃燈指標' : '這個類別目前沒有指標'));
+}
+
+function drawCal() {
+  const box = $('cal'); box.replaceChildren();
+  const all = CAL.slice().sort((a, b) => String(a.date + a.tw_time).localeCompare(String(b.date + b.tw_time)))
+    .filter((r) => { const n = daysUntil(r.date); return n === null || n >= 0; });
+  if (!all.length) return box.appendChild(mk('p', 'empty', '近期沒有排定的事件'));
+  const WD = '日一二三四五六';
+  const table = mk('table', 'cal'); const tb = mk('tbody'); table.append(tb);
+  (allCal ? all : all.slice(0, 5)).forEach((r) => {
+    const n = daysUntil(r.date);
+    const p = String(r.date).split('-').map(Number);
+    const wd = p.length === 3 ? '(' + WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()] + ')' : '';
+    const tr = mk('tr');
+    const t = mk('td', 't'); t.append(mk('b', '', String(r.date).slice(5).replace('-', '/') + wd), document.createTextNode(r.tw_time || ''));
+    const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
+    const body = mk('td'); const ev = mk('div', 'event');
+    if (r.region) ev.append(mk('span', 'tag', r.region));
+    ev.append(link(r.source_url, r.event || ''));
+    const why = mk('div', 'why', r.why || ''); why.title = r.why || '';
+    body.append(ev, why);
+    tr.append(t, cd, body); tb.appendChild(tr);
+  });
+  box.appendChild(table);
+  if (all.length > 5) {
+    const b = mk('button', 'more', allCal ? '收起' : `顯示全部 ${all.length} 項`); b.type = 'button';
+    b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); box.appendChild(b);
+  }
+}
+
+function drawNews() {
+  const ul = $('news'); ul.replaceChildren();
+  const all = NEWS.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  (allNews ? all : all.slice(0, 5)).forEach((r) => {
+    const li = mk('li');
+    li.append(mk('span', 'date', String(r.date || '').slice(5).replace('-', '/')));
+    if (r.topic) li.append(mk('span', 'tag', r.topic));
+    li.append(link(r.source_url, r.title || ''));
+    if (r.source_name) li.append(mk('span', 'date', '　' + r.source_name));
+    ul.appendChild(li);
+  });
+  if (all.length > 5) {
+    const li = mk('li'); li.style.borderBottom = '0';
+    const b = mk('button', 'more', allNews ? '收起' : `顯示全部 ${all.length} 則`); b.type = 'button';
+    b.addEventListener('click', () => { allNews = !allNews; drawNews(); }); li.append(b); ul.appendChild(li);
+  }
+}
+
+function loadAll() {
+  const btn = $('reload'), status = $('status'), before = $('updated').textContent;
+  btn.disabled = true; btn.textContent = '載入中…'; status.textContent = '';
+  return Promise.allSettled([
+    getJSON('indicators.json').then((d) => { IND = d.rows || []; REF = refDate(); $('asof').textContent = md(REF) || '—'; drawSummary(); drawEq(); drawList(); })
+      .catch((e) => { fail('eq', '股市資料載入失敗'); fail('list', '指標資料載入失敗'); throw e; }),
+    getJSON('calendar.json').then((d) => { CAL = d.rows || []; drawCal(); }).catch((e) => { fail('cal', '行事曆載入失敗'); throw e; }),
+    getJSON('headlines.json').then((d) => { NEWS = d.rows || []; drawNews(); }).catch((e) => { $('news').replaceChildren(mk('li', 'empty', '新聞載入失敗')); throw e; }),
+    getJSON('meta.json').then((d) => { $('updated').textContent = d.updated_at ? String(d.updated_at).slice(5).replace('-', '/') : '—'; }),
+  ]).then((res) => {
+    $('loaded').textContent = twNow();
+    const after = $('updated').textContent;
+    if (res.some((r) => r.status === 'rejected')) status.textContent = '· 部分資料載入失敗';
+    else if (before !== '—' && before === after) status.textContent = '· 已是最新';
+    else if (before !== '—') status.textContent = '· 已載入新數據';
+  }).finally(() => { btn.disabled = false; btn.textContent = '重新載入'; });
+}
+
+// 在 GitHub Pages 上時，顯示「立即抓新數據」按鈕，連到 Actions 手動執行頁
+(() => {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+  if (!m) return;
+  const repo = location.pathname.split('/').filter(Boolean)[0] || (m[1] + '.github.io');
+  const a = $('run-update');
+  a.href = `https://github.com/${m[1]}/${repo}/actions/workflows/update.yml`;
+  a.title = '開啟 GitHub Actions，按「Run workflow」立即抓一次新數據，1–2 分鐘後再按「重新載入」';
+  a.hidden = false;
+})();
+
+$('reload').addEventListener('click', loadAll);
+$('filter').addEventListener('change', (e) => { filter = e.target.value; drawList(); });
+loadAll();
+}
+</script>
+</body>
+</html>
