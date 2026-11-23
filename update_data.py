@@ -97,14 +97,26 @@ def fetch_yahoo(rows_by_id):
         return
     for i, (ticker, name, group, unit, note) in YAHOO.items():
         try:
-            hist = yf.Ticker(ticker).history(period="1y", auto_adjust=False)
+            tk = yf.Ticker(ticker)
+            hist = tk.history(period="1y", auto_adjust=False)
             hist = hist.dropna(subset=["Close"])
             if len(hist) < 2:
                 raise ValueError("資料不足")
             close = float(hist["Close"].iloc[-1])
             prev = float(hist["Close"].iloc[-2])
-            high = float(hist["Close"].max())
             as_of = hist.index[-1].strftime("%Y-%m-%d")
+            # Yahoo 的日線常常晚一天才補上亞洲市場當天那一根，用小時線補
+            try:
+                intraday = tk.history(period="5d", interval="60m", auto_adjust=False).dropna(subset=["Close"])
+                if len(intraday):
+                    last_day = intraday.index[-1].strftime("%Y-%m-%d")
+                    if last_day > as_of:
+                        prev = close
+                        close = float(intraday["Close"].iloc[-1])
+                        as_of = last_day
+            except Exception as e:
+                print(f"{i} 小時線讀取失敗，使用日線：{e}", file=sys.stderr)
+            high = max(float(hist["Close"].max()), close)
             if i == "us10y":
                 if close > 20:  # 舊格式 ×10
                     close, prev = close / 10, prev / 10
