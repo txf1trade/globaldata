@@ -1,0 +1,39 @@
+name: 更新市場數據
+
+on:
+  schedule:
+    - cron: "10 22 * * *"
+    - cron: "10 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安裝套件
+        run: pip install -r requirements.txt
+      - name: 抓取最新數據
+        run: python update_data.py
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add indicators.json headlines.json meta.json
+          if git diff --cached --quiet; then
+            echo "沒有新數據"
+          else
+            git commit -m "自動更新市場數據 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push
+          fi
