@@ -1,12 +1,20 @@
 {
  "rows": [
   {
-   "id": "n12",
+   "id": "n19",
    "date": "2026-11-24",
-   "topic": "美債殖利率",
-   "title": "AI雜音資金搬家 美債殖利率降10年期跌破5%",
-   "source_name": "非凡新聞台",
-   "source_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBoaGswN21NX0JiZWNEaDctUTdtOGhUUTU3Zi1fOFd6VUxlR1IwN3dJeExBQ1A4RFNFQlZFSGlXOGVmUzhoWUNXTHoyQXdTWjdqcWlNenNmQjEtWG5y?oc=5"
+   "topic": "台股",
+   "title": "不管台股狂飆！外資續賣503億、自營商暴砍810億 三大法人賣超1230.11億元",
+   "source_name": "鉅亨網",
+   "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBHeGRfeFNpN0xWNmhXU1hFMFVEWGRTd0dUeG1QRVdBWHhXVG52bEZJMTMzR1hMMUE2VWRXYW1ESTM1R2xDS1B0NVpXaFFHUk0?oc=5"
+  },
+  {
+   "id": "n20",
+   "date": "2026-11-24",
+   "topic": "台股",
+   "title": "不管台股狂飆！外資續賣503億、自營商暴砍810億 三大法人賣超1230.11億元",
+   "source_name": "Yahoo股市",
+   "source_url": "https://news.google.com/rss/articles/CBMinANBVV95cUxPS0dUeVV0QnlyT2dlTFM5NFVVS3ctZmZ3OFdEUFZ0M2ZNeDRjVG95Q3lnb3VVQWVpdXRyTG9RXzVXSnlZVkhXczMtMTN0d0UyMXp5bU5PMjE1ZHBvUk1va1BrVlVkbG10ak0tSkxPQ05mOTgzMmw3Ykh2VTBsZjZlOWdpX3lJcDJFSDk1UjNmR1ZxVFlLNklieXVueHRXQm1pQlBhcGsxbThkU2xjb2g3akZGZHBiU0thU3dCWnlPamJYM0ZRRG1FcDhXNjViYVZPVVliMERUcy15TXlFVGtsdkFLc0pjMmttSEZGSkVlWjNzRk9fUnlKTmlqbWVDVDE1N2hmVi1ZWHBGLTlzY0VlNlJObl9YQU1kOGtQY3ZFX1RYMXByU21hSlQ4cjRZd0N4eGhqNU1IcG1pUG9MZzg3MjNwM0hCUTR6NVh1azhIdVAzN2l0aEV3UDNtNV95djhDWVJfV09VVEZhbVlLRHVSMFJNUC1zYVlfd0FoRUNUSGFDdHQ4V0JETFlSMWhHSEppcXZuV2U1d29tNndt?oc=5"
   },
   {
    "id": "n5",
@@ -25,6 +33,22 @@
    "source_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1ycU9BbnZKYzh0SFdnc3BQcTRIakpIeTRSNWNtZ0xzMnFHd2xQOTJDT2FxZmI2YTFVaXVpT256MXo1RHFDdW91Q0JxZTcwMTc1U08tTGw4ZDVYckRtZDBN?oc=5"
   },
   {
+   "id": "n10",
+   "date": "2026-11-23",
+   "topic": "美債殖利率",
+   "title": "《美債》美股重挫引發避險潮 殖利率跌破5%",
+   "source_name": "MoneyDJ",
+   "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPY2JnY3dZWlNUZTVNdk9Ob2FKRDB5YmNfeHVJcnRRSnZLQllhVVF0OGpiSDlwOHlHUGhvUWMwR0FJendvSDhuS0NUVTdZOG5vcEdKOHRHMGtmQ3c1TnNCakUybzRKbkxEa3VaZlBpX2xkb3drTTlYYzU2STRZOGRqQWZQVlR6Z2lVY3liLTlfbTVJdw?oc=5"
+  },
+  {
+   "id": "n11",
+   "date": "2026-11-23",
+   "topic": "美債殖利率",
+   "title": "股市大跌難撼聯準會鷹派立場 華爾街仍青睞美債殖利率曲線趨平交易 | 國際焦點 | 國際",
+   "source_name": "經濟日報",
+   "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBDd1BLSG5mZ2VLazNnVmtQVHJHN3hkclB5dTFzZUdHQ2FlNGpFMGFqeTZXYXZKZlVWUDZBeFFFamw5ZXdQS095TFhXTnd6T0k2eUdEWjhWaFplUQ?oc=5"
+  },
+  {
    "id": "n13",
    "date": "2026-11-23",
    "topic": "AI",
@@ -33,12 +57,20 @@
    "source_url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFB5V19tMlF1T1UxcXZUbDRTNF94QlFxdGVZQldxSHVwa1JURjJJQUVfMXVhMHZnLTA3UU13WU1MQklPbmpKTjgyMk9pVFZxWU1kN1p5OGI5SXdwUVRwbThONUlqdzg2UWtHdGtrOXJYbEpraXFOb2dKdEZ3?oc=5"
   },
   {
-   "id": "n15",
+   "id": "n16",
    "date": "2026-11-23",
    "topic": "AI",
    "title": "隨著AI股拋售暫歇，亞洲監管機構出手支撐股市，美股期貨上漲",
    "source_name": "TradingView",
-   "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9FVTRnWG9NUUNSU1RyNlBWVy1pY25UdUFQQmxIS3hZV3NCNFF0a0lHN0NIanR5eXNPa2diWEVGb2QycEkwS1FucE5BVms3WWszTzdaZDA5RXNRNE9qclV0ejY2eUlYLW02djhSbHQydEpjN2ZRaE5N?oc=5"
+   "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE4tUm1EYkFVenBjZ1dSMWJON3RWaEdGR2JOa0NJWXlYa0hodkdqSHVpTUthZ1V1ZzNQdFgzbUt1TGdGR3BESXpuTDc2M0xyaHQtUFZxZjltMDJETndVb2dlcjFmT2lhVERQT0UxQ1daMzRoZExkRTRN?oc=5"
+  },
+  {
+   "id": "n18",
+   "date": "2026-11-23",
+   "topic": "台股",
+   "title": "三大法人不甩台股反彈778點！聯手再賣超511.77億元 外資占多少？",
+   "source_name": "經濟日報",
+   "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xcnc0NjVTb2VJcXFvME4ta2p2VC13SHlWVXJHOVhVOWlZX0lncGtiYjBDc3BESDNVSzFjbUNxenl2SHZvWjJISzVIT2JmdDZsbkdZX3owblZBUdIBX0FVX3lxTE9rcWRJeHVtaEFTTF9ZYUdJUVZRTmg1RzRJVHUyd1hjRWpRUWM0Nm1uOEdjWFYxUlVKQkpoY1pMQmNFTmdqTEhseUNlaWJSellqdU80b3UzcjlzQk1ZS01N?oc=5"
   },
   {
    "id": "n4",
@@ -57,44 +89,12 @@
    "source_url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE96eUhYYmp1LU5OMnBDMVlMU1JXLUJndlF2U0FvRWo2S2RRblRsUmZ1QnVFSHhfVXlCSnp2WUxrOFVyWG1PSzBGeDJoSXV5ZllxOUl4M0xPZkdYd1JLZDZpeDFPaHJpSlhQQnN3QTdPTXB5Q0pHd0o5SlNsVQ?oc=5"
   },
   {
-   "id": "n19",
-   "date": "2026-11-22",
-   "topic": "台股",
-   "title": "三大法人不甩台股反彈778點！聯手再賣超511.77億元 外資占多少？",
-   "source_name": "經濟日報",
-   "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xcnc0NjVTb2VJcXFvME4ta2p2VC13SHlWVXJHOVhVOWlZX0lncGtiYjBDc3BESDNVSzFjbUNxenl2SHZvWjJISzVIT2JmdDZsbkdZX3owblZBUdIBX0FVX3lxTE9rcWRJeHVtaEFTTF9ZYUdJUVZRTmg1RzRJVHUyd1hjRWpRUWM0Nm1uOEdjWFYxUlVKQkpoY1pMQmNFTmdqTEhseUNlaWJSellqdU80b3UzcjlzQk1ZS01N?oc=5"
-  },
-  {
    "id": "n1",
    "date": "2026-11-21",
    "topic": "全球股市",
    "title": "「股災還沒這麼可怕！」專家揭暴跌背後藏全球危機：恐擴散到全金融市場 | 張大任 | 新聞",
    "source_name": "風傳媒",
    "source_url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5IZHhFUkxkenZfcVJfanNXT0ZWWDBjTjFoR3pseUF1aWtST19qVTFBMTNzU1Q3by1KMVJpN3pvNmViUGpYSnZiOXJUV0haQQ?oc=5"
-  },
-  {
-   "id": "n3",
-   "date": "2026-11-20",
-   "topic": "全球股市",
-   "title": "台股本週脫軌國際盤，流動性枯竭拉警報",
-   "source_name": "鉅亨網",
-   "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE93eDVjSnZ3QXZTbjg3OGlYZ2pOamxQeFRQTGdGMEV0WEphRHlkSlhBa2E2dUtmX2JjWEpWSmQ2VExtMmx5Z2dTTVBRSkR2OWM?oc=5"
-  },
-  {
-   "id": "n10",
-   "date": "2026-11-20",
-   "topic": "美債殖利率",
-   "title": "美債殖利率升，股市就會跌？百年數據打臉升息恐慌",
-   "source_name": "商業周刊",
-   "source_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFAtX0djdEJVa0dkeUxTNkZid0J5YWdqQ0JwSGE5Q3dKbjdMVUU0WUVTWlhGUkxwZUpwNHpHUWIxSmRvdkR1Q1BsclJYcEg2cG5qOFcxSGZMRHFHM3A2dGNLcDZvN0pPbTR3czZ5RkszV0Y?oc=5"
-  },
-  {
-   "id": "n14",
-   "date": "2026-11-20",
-   "topic": "AI",
-   "title": "AI股拋售潮加劇 亞股恐創2020年來最慘一週",
-   "source_name": "大紀元",
-   "source_url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE81MXFQaVY3Y0dGWUhubzZYU0xMdlVkWFYtd2FnSE5wRkdWTUhfenJyMVM3Rkd0a0tnMzRIamFCYjJURWRyWWFUS3FfMG92SG5NdG5NZS1jVmJqVndvdGg0SzRn0gFnQVVfeXFMT3hKdEN3NFpXVURNY1FqdTB5Q0VNVU9yQnRhMjUxTXU3R3JIY2xUd2Q4YjFZSHBMcEhnWGZjUlRPUGhzbkY2NEk2dHFYUXVEeG8tYzgwTVJ5VEgtbEZuc2dOMGFzaEJPSQ?oc=5"
   }
  ]
 }
