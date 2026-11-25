@@ -1,6 +1,22 @@
 {
  "rows": [
   {
+   "id": "n9",
+   "date": "2026-11-26",
+   "topic": "美債殖利率",
+   "title": "美債殖利率走高迎布局契機- 日報",
+   "source_name": "工商時報",
+   "source_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBkaVhNWFl0RjVKZ09kUEk0ckljay1HckpmY0ExSElXM3ZhS0hBanFIVlFZZ21IVFQ3Rzk1NVJzX2FnTnVHRXExSHlpX0g0YWpWeVJaYktsVzY1NmF5dG8w?oc=5"
+  },
+  {
+   "id": "n16",
+   "date": "2026-11-26",
+   "topic": "AI",
+   "title": "《焦點》AI股拋售愈演愈烈，Anthropic一度低見74美元",
+   "source_name": "TradingView",
+   "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9vOEpkZmc2MTJ0NmNFNHkwTGhmN1BIRnNBY0hzYmQ2dDR5V2s5bTc1ZmQ1NU9UNUZGVlJMR01aQVhUM1BNVHJMa0UwbGFtdV9WOWZ4T0stdEJjMzVVM1pBLXJQZHdyZVZvY0tsVEd2R3BMZWc4eFQ0?oc=5"
+  },
+  {
    "id": "n6",
    "date": "2026-11-25",
    "topic": "聯準會",
@@ -9,7 +25,7 @@
    "source_url": "https://news.google.com/rss/articles/CBMi5ARBVV95cUxQNGl0b0E3TnhsWHNZVWc3cl9KRGhpUUZmQVFVX293a1o0YnhIRXF3LV9TM1lwbHdsN0JKVXo1R0hmUjlDNVRZT0JfcDFmWklWWHRZNjhRRGM5Ykluc3dlQlNKd0xBcC1YTldlWFp1VGZURHpHamRmU29uMUZvdEJXS1dVNVp2TXctYno1MnZ1MEp2Y3ByUHRHMHlLaDRqSjdrTXhYRmItSklFLTNiSUFUTnZIV0g4eW1DLWV2STRXRFo2Nng4YmZEMnQtajRMSV9YLTVqMEthZlZqdTFwTlZVX0E5bXRnNzRLQnBrWWNzRjJqU0l0N2Zfd0hCWkN5blBrVklmRnY1Xy1zUkFUMXJia3VwTWxyWmNuZGw3bUVJQUFEOVBHM2gxU0NXNE1VMGZxbkpYUVN4YjFrSWo3ZHR2RmNJTHY3Vmx4SGs2cWJCZWlWLUZTbE1ZRHFWYkZZekxQQU92cERfZzQ4c0NGUV9kZTJWaF85S2t2aEFucW1hU1dyNktpN3lGdGxWc0tudGVOTXJRUHFEc2VkR2tJM3BKZDBQSmx6VE9KWHJERUh3bmI5TjBIN3RCUDBXWVZpQXVKMmpBT0Q5ajJUYW5ZV29qU1dGWjhPVUNkOUtRQXZ3SnJ0M3J1aTJnVmVHTjRfYzNxZ2hmbGtWaTlRUFZTZHNxNTZxb0V0c1NFSDJXakdXQ05BYWNaOEFDVEdTdXNVY2dJRlF4QWpWYmgtdlVjWlJBVWdyZjAtTWQ4U0FTRWdycnZ6Sm8yX2xXUDh5dElLYkprLXowMVBHeWFlT2VIenJJNEVQUmo?oc=5"
   },
   {
-   "id": "n9",
+   "id": "n10",
    "date": "2026-11-25",
    "topic": "美債殖利率",
    "title": "AI概念股強彈推升美債殖利率 美元指數創今年新高",
@@ -17,7 +33,7 @@
    "source_url": "https://news.google.com/rss/articles/CBMi2wJBVV95cUxPd25XalNvcnJFNVM0WGY2VlBNYzhBTGpTXzBGakhGSVg3NXFoLUtFLXRYTDVENktsZGNJVHNrc2Zid21jaDl4Z1VrZUtldVVGM0JkRm0tTVFLUXJ5STFyY0tCb3d0eC1oR1N6cm9CTzNVQklSb0RWZ3lvelpTanBwM2lIaGtqV0V3WmdISUpvWjg5NkVxem1TY0NHUEU4d1lIRk9mU0poaVliaTdLbGIzZTdHWlFqUzdCaW9SV2dQamdxNzhlNG1heEZFUjQwY0dxUzA2NXFHNEw5cmNEbVNzNmYzc3B1THdlQUMzVmU1ZWNOT2FVSW5YeVNoZFRfNEhKWWpLaVlRTTVmb1IyWmtLWlB3ZDI5M0NlUGlrcm1KenBHNFFXSkpyNTkyb092VEZhWllkalgtQzA5Z0V4LTB4Q25jUDMwUzdXS3pLR3N6dHBGVXZTNC1MLWNRbw?oc=5"
   },
   {
-   "id": "n14",
+   "id": "n13",
    "date": "2026-11-25",
    "topic": "AI",
    "title": "AI科技股拋售潮衝擊 三星電子普通股市值跌破千兆韓元大關",
@@ -42,19 +58,11 @@
   },
   {
    "id": "n19",
-   "date": "2026-11-25",
-   "topic": "台股",
-   "title": "外資殺紅眼！今提款1237億史上第7大",
-   "source_name": "ETtoday財經雲",
-   "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBYU255ZFp0NURYOEIzMmtySWh2QVYzY3NhdzBzQ0RmZGNHdmdTNnlsUWVkeDFxNERNWUdCWmJtNjZTMkhYZVRiQU1fTmNhUzRXS2fSAVBBVV95cUxNWGZlSnkwUmtra1h3TkE2cDZrdGFxUndVQ3BWak1DWkk3eXlzenRPQmFlX0xveHp0QTlJazRMSXFLN295SWFjWVFxbTFxY01PLQ?oc=5"
-  },
-  {
-   "id": "n11",
    "date": "2026-11-24",
-   "topic": "美債殖利率",
-   "title": "《美債》黃仁勳重掌輝達美股強彈殖利率回升- 新聞",
-   "source_name": "MoneyDJ",
-   "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUozQzd6WVlfUFRlOGZ2bmFLeHZBTVBTNjRySzRncXNfWGdCNFpITW5NTFRDUFI2OFVHNGpyT3NOUFhEd0xVSmFSTHFrbXdPc0htZE5lRkYtS1lvNHBRM2RwWFhCaXBGQ3h1d2wxMDBKQ1JYNzlXS1JadmlST2dHd2tRUW1WSVk3ekVuNUNNTUh1QQ?oc=5"
+   "topic": "台股",
+   "title": "三大法人不甩台股反彈778點！聯手再賣超511.77億元 外資占多少？",
+   "source_name": "經濟日報",
+   "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xcnc0NjVTb2VJcXFvME4ta2p2VC13SHlWVXJHOVhVOWlZX0lncGtiYjBDc3BESDNVSzFjbUNxenl2SHZvWjJISzVIT2JmdDZsbkdZX3owblZBUdIBX0FVX3lxTE9rcWRJeHVtaEFTTF9ZYUdJUVZRTmg1RzRJVHUyd1hjRWpRUWM0Nm1uOEdjWFYxUlVKQkpoY1pMQmNFTmdqTEhseUNlaWJSellqdU80b3UzcjlzQk1ZS01N?oc=5"
   },
   {
    "id": "n20",
@@ -65,36 +73,28 @@
    "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBHeGRfeFNpN0xWNmhXU1hFMFVEWGRTd0dUeG1QRVdBWHhXVG52bEZJMTMzR1hMMUE2VWRXYW1ESTM1R2xDS1B0NVpXaFFHUk0?oc=5"
   },
   {
-   "id": "n13",
+   "id": "n5",
    "date": "2026-11-23",
-   "topic": "AI",
-   "title": "AI股拋售風暴後，紐約股市命運繫於10月PCE物價",
-   "source_name": "BigGo 財經",
-   "source_url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFB5V19tMlF1T1UxcXZUbDRTNF94QlFxdGVZQldxSHVwa1JURjJJQUVfMXVhMHZnLTA3UU13WU1MQklPbmpKTjgyMk9pVFZxWU1kN1p5OGI5SXdwUVRwbThONUlqdzg2UWtHdGtrOXJYbEpraXFOb2dKdEZ3?oc=5"
-  },
-  {
-   "id": "n15",
-   "date": "2026-11-23",
-   "topic": "AI",
-   "title": "全球AI概念股引爆拋售潮 新興市場本益比創金融海嘯後新低",
+   "topic": "聯準會",
+   "title": "阻止聯準會升息最快方式！ 美銀：吐回2026年全部漲幅",
    "source_name": "Yahoo股市",
-   "source_url": "https://news.google.com/rss/articles/CBMiiwNBVV95cUxPS0tZdTNQdW03N1htUnUyTF9ZOVZoVHVhNzFiM1k1YWFlamtjcWJJYTdJQjhnc0NBUFB5d08wd2F1dTlUdUdZZEoyYWNwNU9kLUtHNHVKbVRoX2JNSnNidG5KV0NUUUdXVjBXQXlWOG90NWU5LXdLMTJfMUxCYVdtb2w0YkhoQ1M3anVkN3RXU0pnbGxkLTVZZU5GRzZxTkFzNm94MWhFSW1fVDlFQzFnNFlYUEVjdjZrNUl1SXowb3IxeUs3b09VZ3BzaC1qYTJ2Zy11dS1MMzlmd1owcllPSU9fTzVEdTlycFc1VmZhUVRYWTNMUkQ4VWsybzNsVDlkVXBsdXpvcE9HVVBQQUJRTUlxVERNVEt6VV96Q05IQlVTLXRGMlQ4UXk5TElhb2pKMHBXT0dBUkRZMG9LckFUaDJ6bmpycEFnN25EUVV5UmJqS0dSWDVNN095QVQ2d2pic2x2R3Q4ZFZPb29Db0NqdVhCVDhLbU5lOG5lYzBtLU9EMVBRd2dJVHlTQQ?oc=5"
+   "source_url": "https://news.google.com/rss/articles/CBMi0wJBVV95cUxPbVhLT0l6Q0RHNE91Y2xmSHU0QWkzMTk3bXNsV2NQTTFqanlOOUI2NTJKMjNMT1UwNl9uQkF2cDVfekQ2dUVqWWxVWTlBMS0zclA2RENIUFZyc29TemJjeU9pVTI1VWM3clBKc1lxckZrRWt5cGk5Q2Q2dVkxVjNOV1d4eTdiNzR4ZFpzQ1AwRkFENUhfajBvX1JSXzdUS1kweC1ZU2hqWEg0WTNPaFVqSmVUQWxXWHg0Znotd3R4X041T3J3TkVRVWxVUzNFRHkwN3E3MldpYW9QWVF0NUpyVU5kbXRBYm5RbWlRRDR6OEhOeVRLc3ZTaXY1MkNIblJPRG5pWGhVdi1QVEJ5eHA3QS1jalROTzQzRjJWc25OMGdnZlB5YUlqYWZFcUV3SnZ0M29ycDVCNEZDTXYtNHRwUVhaMGJCMV9WZi1WbkVKUmNZTGs?oc=5"
   },
   {
-   "id": "n3",
-   "date": "2026-11-22",
-   "topic": "全球股市",
-   "title": "股災恐只是開端？財經達人葉育碩曝「3張骨牌」 憂全球流動性危機| 股市理財",
-   "source_name": "太報 TaiSounds",
-   "source_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9ORVRJX3h6eFNFeHFVeUNvWmtpZi1hVmpSU3RWUDNkXzltVkNmQVZpVTJwVTNiUm5MWktNTTlCVmFPbDZCTXN5WjNxVEI4WmtYLVJ0TWxhVjNXRzlu?oc=5"
+   "id": "n7",
+   "date": "2026-11-23",
+   "topic": "聯準會",
+   "title": "Fed死守2%錯了？艾克曼喊通膨目標改3% 警告12月升息恐釀衰退",
+   "source_name": "鉅亨網",
+   "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE1KRkJPb2FVV2dhYkJnR3NoUUdQN2pSa2FmejFhTE1mMmRIMTVYcjg4ZGU2WkpNWThQeXQ2Mk5PWkMzTmN2YjVKSVJHakthRzA?oc=5"
   },
   {
-   "id": "n1",
-   "date": "2026-11-21",
-   "topic": "全球股市",
-   "title": "「股災還沒這麼可怕！」專家揭暴跌背後藏全球危機：恐擴散到全金融市場 | 張大任 | 新聞",
-   "source_name": "風傳媒",
-   "source_url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE5IZHhFUkxkenZfcVJfanNXT0ZWWDBjTjFoR3pseUF1aWtST19qVTFBMTNzU1Q3by1KMVJpN3pvNmViUGpYSnZiOXJUV0haQQ?oc=5"
+   "id": "n8",
+   "date": "2026-11-23",
+   "topic": "聯準會",
+   "title": "美股崩跌還要升息？美財長貝森特：Fed過度緊縮政策將是一個嚴重錯誤- 國際",
+   "source_name": "工商時報",
+   "source_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1ycU9BbnZKYzh0SFdnc3BQcTRIakpIeTRSNWNtZ0xzMnFHd2xQOTJDT2FxZmI2YTFVaXVpT256MXo1RHFDdW91Q0JxZTcwMTc1U08tTGw4ZDVYckRtZDBN?oc=5"
   }
  ]
 }

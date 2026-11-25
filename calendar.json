@@ -24,7 +24,7 @@
    "tw_time": "13:30",
    "region": "台灣",
    "event": "富台指（SGX）11月合約結算",
-   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
+   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
   },
   {
@@ -113,7 +113,7 @@
    "date": "2026-12-16",
    "tw_time": "13:30",
    "region": "台灣",
-   "event": "台指期12月合約結算（每月第三個週三）",
+   "event": "台指期12月合約結算",
    "why": "結算價取13:00–13:30平均，結算前多空攻防常使尾盤波動放大",
    "source_url": "https://www.taifex.com.tw/cht/5/fSPCalendar"
   },
@@ -150,7 +150,7 @@
    "tw_time": "22:30起",
    "region": "美國",
    "event": "美股四巫日（股指期貨、選擇權、個股期權同步到期）；台道瓊／台那斯達克同日結算",
-   "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北週六04:00–05:00）波動最大",
+   "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北隔天凌晨）波動最大",
    "source_url": "https://www.cmegroup.com/trading/equity-index/"
   },
   {
@@ -177,7 +177,7 @@
    "tw_time": "13:30",
    "region": "台灣",
    "event": "富台指（SGX）12月合約結算",
-   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
+   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
   },
   {
