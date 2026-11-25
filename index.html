@@ -69,7 +69,9 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .item-val { font-weight: 600; white-space: nowrap; text-align: right; }
 .item-unit { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .item .chg { text-align: right; }
-.note { grid-column: 2 / 6; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.note { display: none; grid-column: 2 / 6; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.item { cursor: pointer; }
+.item.open .note { display: block; }
 .src { margin-left: 6px; }
 .cal { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cal td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -82,7 +84,10 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .star { color: var(--warn); margin-right: 4px; }
 .cal a { text-decoration: none; }
 .cal a:hover { text-decoration: underline; }
-.why { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.why { display: none; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.cal tr { cursor: pointer; }
+.cal tr.open .why { display: block; }
+.hint { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 6px; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
 ul.news { list-style: none; margin: 0; padding: 0; }
 ul.news li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
@@ -139,7 +144,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <section>
     <div class="bar">
-      <h2>接下來要注意（台灣時間）</h2>
+      <h2>接下來要注意<span class="hint">台灣時間・點一下看說明</span></h2>
       <select id="calfilter" aria-label="篩選行事曆">
         <option value="key">只看重要</option>
         <option value="">全部事件</option>
@@ -150,7 +155,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <section>
     <div class="bar">
-      <h2>指標燈號</h2>
+      <h2>指標燈號<span class="hint">點一下看說明</span></h2>
       <select id="filter" aria-label="篩選指標">
         <option value="alert">只看紅燈與黃燈</option>
         <option value="">全部指標</option>
@@ -258,6 +263,7 @@ function drawList() {
     const src = mk('span', 'src');
     src.append(document.createTextNode(r.manual ? '· 手動 · ' : '· '), link(r.source_url, r.source_name || '來源'));
     note.append(src);
+    it.addEventListener('click', (e) => { if (e.target.tagName !== 'A') it.classList.toggle('open'); });
     it.append(dot, nameWithDate('item-name', r), v, mk('span', 'item-unit', r.unit || ''), chg(r), note);
     box.appendChild(it);
   });
@@ -272,7 +278,7 @@ function drawCal() {
   if (!all.length) return box.appendChild(mk('p', 'empty', calFilter === 'key' ? '近期沒有重要事件' : '近期沒有排定的事件'));
   const WD = '日一二三四五六';
   const table = mk('table', 'cal'); const tb = mk('tbody'); table.append(tb);
-  (allCal ? all : all.slice(0, 6)).forEach((r) => {
+  (allCal ? all : all.slice(0, 5)).forEach((r) => {
     const n = daysUntil(r.date);
     const p = String(r.date).split('-').map(Number);
     const wd = p.length === 3 ? '(' + WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()] + ')' : '';
@@ -286,12 +292,13 @@ function drawCal() {
     ev.append(link(r.source_url, r.event || ''));
     const why = mk('div', 'why', r.why || ''); why.title = r.why || '';
     body.append(ev, why);
+    tr.addEventListener('click', (e) => { if (e.target.tagName !== 'A') tr.classList.toggle('open'); });
     tr.append(t, cd, body); tb.appendChild(tr);
   });
   box.appendChild(table);
   const hidden = upcoming.length - all.length;
   const row = mk('div'); row.style.display = 'flex'; row.style.gap = '16px';
-  if (all.length > 6) {
+  if (all.length > 5) {
     const b = mk('button', 'more', allCal ? '收起' : `顯示全部 ${all.length} 項`); b.type = 'button';
     b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); row.append(b);
   }
