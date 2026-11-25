@@ -203,6 +203,84 @@ def fetch_news(old_rows):
     return out[:12] if out else old_rows
 
 
+# ---------- 期貨結算日（依規則自動計算，實際以各交易所公告為準） ----------
+def _nth_weekday(y, m, weekday, n):
+    """當月第 n 個星期幾（weekday: 週一=0）"""
+    from datetime import date
+    d = date(y, m, 1)
+    d = d + timedelta(days=(weekday - d.weekday()) % 7)
+    return d + timedelta(weeks=n - 1)
+
+
+def _second_last_weekday(y, m):
+    from datetime import date
+    nxt = date(y + (m == 12), m % 12 + 1, 1)
+    d, found = nxt - timedelta(days=1), 0
+    while True:
+        if d.weekday() < 5:
+            found += 1
+            if found == 2:
+                return d
+        d -= timedelta(days=1)
+
+
+def settlement_events(days_ahead=45):
+    today = datetime.now(TW).date()
+    end = today + timedelta(days=days_ahead)
+    out = []
+    y, m = today.year, today.month
+    for _ in range(3):
+        ym = f"{m}月"
+        txf = _nth_weekday(y, m, 2, 3)
+        out.append({"id": f"auto_txf_{y}{m:02d}", "date": txf.isoformat(), "tw_time": "13:30", "region": "台灣",
+                    "event": f"台指期{ym}合約結算（每月第三個週三）",
+                    "why": "結算價取13:00–13:30平均，結算前多空攻防常使尾盤波動放大",
+                    "source_url": "https://www.taifex.com.tw/cht/5/fSPCalendar"})
+        sgx = _second_last_weekday(y, m)
+        out.append({"id": f"auto_sgx_{y}{m:02d}", "date": sgx.isoformat(), "tw_time": "13:30", "region": "台灣",
+                    "event": f"富台指（SGX）{ym}合約結算",
+                    "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
+                    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"})
+        sq = _nth_weekday(y, m, 4, 2)
+        major = m in (3, 6, 9, 12)
+        out.append({"id": f"auto_sq_{y}{m:02d}", "date": sq.isoformat(), "tw_time": "08:00（開盤）", "region": "日本",
+                    "event": "日經225 " + ("季度大結算（メジャーSQ）" if major else "月結算（ミニSQ）"),
+                    "why": "以開盤價結算，開盤前後常出現大額買賣單",
+                    "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"})
+        if major:
+            qw = _nth_weekday(y, m, 4, 3)
+            out.append({"id": f"auto_quad_{y}{m:02d}", "date": qw.isoformat(), "tw_time": "22:30起", "region": "美國",
+                        "event": "美股四巫日（股指期貨、選擇權、個股期權同步到期）；台道瓊／台那斯達克同日結算",
+                        "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北週六04:00–05:00）波動最大",
+                        "source_url": "https://www.cmegroup.com/trading/equity-index/"})
+            kq = _nth_weekday(y, m, 3, 2)
+            out.append({"id": f"auto_krquad_{y}{m:02d}", "date": kq.isoformat(), "tw_time": "14:20", "region": "韓國",
+                        "event": "韓股四巫日（指數期貨、選擇權與個股期貨同步到期）",
+                        "why": "大量部位到期，可能加劇外資進出與尾盤波動",
+                        "source_url": "https://global.krx.co.kr/"})
+        m += 1
+        if m == 13:
+            y, m = y + 1, 1
+    return [e for e in out if today.isoformat() <= e["date"] <= end.isoformat()]
+
+
+def update_calendar():
+    path = DATA / "calendar.json"
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8"))["rows"]
+    except Exception:
+        rows = []
+    today = datetime.now(TW).date()
+    keep = [r for r in rows if not str(r.get("id", "")).startswith("auto_")
+            and str(r.get("date", "")) >= (today - timedelta(days=2)).isoformat()]
+    def dup(e):
+        return any(r.get("date") == e["date"] and r.get("region") == e["region"]
+                   and any(k in str(r.get("event", "")) for k in ("結算", "四巫", "SQ")) for r in keep)
+    rows = keep + [e for e in settlement_events() if not dup(e)]
+    rows.sort(key=lambda r: (r.get("date", ""), r.get("tw_time", "")))
+    path.write_text(json.dumps({"rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 def main():
     ind_path = DATA / "indicators.json"
     old = json.loads(ind_path.read_text(encoding="utf-8"))["rows"]
@@ -225,6 +303,11 @@ def main():
     news_path = DATA / "headlines.json"
     old_news = json.loads(news_path.read_text(encoding="utf-8"))["rows"]
     news_path.write_text(json.dumps({"rows": fetch_news(old_news)}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    try:
+        update_calendar()
+    except Exception as e:
+        print(f"行事曆更新失敗：{e}", file=sys.stderr)
 
     (DATA / "meta.json").write_text(json.dumps(
         {"updated_at": datetime.now(TW).strftime("%Y-%m-%d %H:%M")}, ensure_ascii=False), encoding="utf-8")
