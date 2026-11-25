@@ -289,21 +289,21 @@ def settlement_events(days_ahead=45):
         # 日經225 SQ：第二個週五，遇休市提前
         d = _shift(jp, _nth_weekday(y, m, 4, 2), False)
         out.append({"id": f"auto_sq_{y}{m:02d}", "date": d.isoformat(), "tw_time": "08:00（開盤）", "region": "日本",
-                    "event": "日經225 " + ("季度大結算（メジャーSQ）" if quarter else "月結算（ミニSQ）"),
+                    "event": "日經225 " + ("季度大結算（SQ）" if quarter else "月結算（SQ）"),
                     "why": "以開盤價結算，開盤前後常出現大額買賣單",
                     "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"})
         if quarter:
             # 美股四巫日：第三個週五，遇休市提前
             d = _shift(us, _nth_weekday(y, m, 4, 3), False)
             out.append({"id": f"auto_quad_{y}{m:02d}", "date": d.isoformat(), "tw_time": "22:30起", "region": "美國",
-                        "event": "美股四巫日（股指期貨、選擇權、個股期權同步到期）；台道瓊／台那斯達克同日結算",
-                        "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北隔天凌晨）波動最大",
+                        "event": "美股四巫日",
+                        "why": "股指期貨、選擇權、個股期權同步到期，台道瓊／台那斯達克同日結算；收盤前一小時（台北隔天凌晨）波動最大",
                         "source_url": "https://www.cmegroup.com/trading/equity-index/"})
             # 韓股四巫日：第二個週四，遇休市提前
             d = _shift(kr, _nth_weekday(y, m, 3, 2), False)
             out.append({"id": f"auto_krquad_{y}{m:02d}", "date": d.isoformat(), "tw_time": "14:20", "region": "韓國",
-                        "event": "韓股四巫日（指數期貨、選擇權與個股期貨同步到期）",
-                        "why": "大量部位到期，可能加劇外資進出與尾盤波動",
+                        "event": "韓股四巫日",
+                        "why": "指數期貨、選擇權與個股期貨同步到期，可能加劇外資進出與尾盤波動",
                         "source_url": "https://global.krx.co.kr/"})
         m += 1
         if m == 13:
