@@ -5,7 +5,8 @@
 - 高收益債利差、美國2年期公債殖利率：FRED 公開 CSV（不需要 API key）
 - 新聞：Google 新聞 RSS（繁體中文）
 - 抓不到的指標會保留上一次的數值與日期，不會清空。
-- 標記 "manual": true 的指標（例如台股融資、升息機率、AI 債務）不會被自動改寫，請手動編輯 indicators.json。
+- 行事曆：期貨結算日依交易所休市曆自動推算；FOMC、CPI、非農日期從官方網站自動抓。
+- 標記 "manual": true 的指標（例如台股融資、升息機率、AI 債務）沒有免費資料來源，不會被自動改寫，請手動編輯 indicators.json。
 """
 import csv
 import io
@@ -203,58 +204,104 @@ def fetch_news(old_rows):
     return out[:12] if out else old_rows
 
 
-# ---------- 期貨結算日（依規則自動計算，實際以各交易所公告為準） ----------
+# ---------- 行事曆：期貨結算日（交易所休市曆）與經濟數據日期（官方網站） ----------
+from datetime import date
+
+UA = {"User-Agent": "Mozilla/5.0 (market-risk-monitor; GitHub Actions)"}
+
+
+def _get(url, timeout=30):
+    req = urllib.request.Request(url, headers=UA)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def _cal(code):
+    """交易所休市曆；套件不可用時回傳 None，改用「週一到週五」近似。"""
+    try:
+        import exchange_calendars as xc
+        today = datetime.now(TW).date()
+        return xc.get_calendar(code, start=str(today - timedelta(days=40)), end=str(today + timedelta(days=400)))
+    except Exception as e:
+        print(f"{code} 休市曆無法使用，改用平日近似：{e}", file=sys.stderr)
+        return None
+
+
+def _is_session(cal, d):
+    if cal is None:
+        return d.weekday() < 5
+    try:
+        return bool(cal.is_session(d.isoformat()))
+    except Exception:
+        return d.weekday() < 5
+
+
+def _shift(cal, d, forward=True):
+    """遇休市：forward=True 順延到下一個交易日，False 提前到前一個交易日。"""
+    step = timedelta(days=1 if forward else -1)
+    for _ in range(15):
+        if _is_session(cal, d):
+            return d
+        d += step
+    return d
+
+
 def _nth_weekday(y, m, weekday, n):
-    """當月第 n 個星期幾（weekday: 週一=0）"""
-    from datetime import date
     d = date(y, m, 1)
     d = d + timedelta(days=(weekday - d.weekday()) % 7)
     return d + timedelta(weeks=n - 1)
 
 
-def _second_last_weekday(y, m):
-    from datetime import date
-    nxt = date(y + (m == 12), m % 12 + 1, 1)
-    d, found = nxt - timedelta(days=1), 0
-    while True:
-        if d.weekday() < 5:
+def _nth_last_session(cal, y, m, n):
+    d = date(y + (m == 12), m % 12 + 1, 1) - timedelta(days=1)
+    found = 0
+    for _ in range(40):
+        if _is_session(cal, d):
             found += 1
-            if found == 2:
+            if found == n:
                 return d
         d -= timedelta(days=1)
+    return d
 
 
 def settlement_events(days_ahead=45):
+    """依各交易所規則推算結算日，遇休市依規則順延或提前。"""
     today = datetime.now(TW).date()
     end = today + timedelta(days=days_ahead)
+    tw, kr, jp, us = _cal("XTAI"), _cal("XKRX"), _cal("XTKS"), _cal("XNYS")
     out = []
     y, m = today.year, today.month
     for _ in range(3):
         ym = f"{m}月"
-        txf = _nth_weekday(y, m, 2, 3)
-        out.append({"id": f"auto_txf_{y}{m:02d}", "date": txf.isoformat(), "tw_time": "13:30", "region": "台灣",
-                    "event": f"台指期{ym}合約結算（每月第三個週三）",
+        quarter = m in (3, 6, 9, 12)
+        # 台指期：第三個週三，遇休市順延
+        d = _shift(tw, _nth_weekday(y, m, 2, 3), True)
+        out.append({"id": f"auto_txf_{y}{m:02d}", "date": d.isoformat(), "tw_time": "13:30", "region": "台灣",
+                    "event": f"台指期{ym}合約結算",
                     "why": "結算價取13:00–13:30平均，結算前多空攻防常使尾盤波動放大",
                     "source_url": "https://www.taifex.com.tw/cht/5/fSPCalendar"})
-        sgx = _second_last_weekday(y, m)
-        out.append({"id": f"auto_sgx_{y}{m:02d}", "date": sgx.isoformat(), "tw_time": "13:30", "region": "台灣",
+        # 富台指：當月倒數第二個台灣交易日
+        d = _nth_last_session(tw, y, m, 2)
+        out.append({"id": f"auto_sgx_{y}{m:02d}", "date": d.isoformat(), "tw_time": "13:30", "region": "台灣",
                     "event": f"富台指（SGX）{ym}合約結算",
-                    "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
+                    "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
                     "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"})
-        sq = _nth_weekday(y, m, 4, 2)
-        major = m in (3, 6, 9, 12)
-        out.append({"id": f"auto_sq_{y}{m:02d}", "date": sq.isoformat(), "tw_time": "08:00（開盤）", "region": "日本",
-                    "event": "日經225 " + ("季度大結算（メジャーSQ）" if major else "月結算（ミニSQ）"),
+        # 日經225 SQ：第二個週五，遇休市提前
+        d = _shift(jp, _nth_weekday(y, m, 4, 2), False)
+        out.append({"id": f"auto_sq_{y}{m:02d}", "date": d.isoformat(), "tw_time": "08:00（開盤）", "region": "日本",
+                    "event": "日經225 " + ("季度大結算（メジャーSQ）" if quarter else "月結算（ミニSQ）"),
                     "why": "以開盤價結算，開盤前後常出現大額買賣單",
                     "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"})
-        if major:
-            qw = _nth_weekday(y, m, 4, 3)
-            out.append({"id": f"auto_quad_{y}{m:02d}", "date": qw.isoformat(), "tw_time": "22:30起", "region": "美國",
+        if quarter:
+            # 美股四巫日：第三個週五，遇休市提前
+            d = _shift(us, _nth_weekday(y, m, 4, 3), False)
+            out.append({"id": f"auto_quad_{y}{m:02d}", "date": d.isoformat(), "tw_time": "22:30起", "region": "美國",
                         "event": "美股四巫日（股指期貨、選擇權、個股期權同步到期）；台道瓊／台那斯達克同日結算",
-                        "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北週六04:00–05:00）波動最大",
+                        "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北隔天凌晨）波動最大",
                         "source_url": "https://www.cmegroup.com/trading/equity-index/"})
-            kq = _nth_weekday(y, m, 3, 2)
-            out.append({"id": f"auto_krquad_{y}{m:02d}", "date": kq.isoformat(), "tw_time": "14:20", "region": "韓國",
+            # 韓股四巫日：第二個週四，遇休市提前
+            d = _shift(kr, _nth_weekday(y, m, 3, 2), False)
+            out.append({"id": f"auto_krquad_{y}{m:02d}", "date": d.isoformat(), "tw_time": "14:20", "region": "韓國",
                         "event": "韓股四巫日（指數期貨、選擇權與個股期貨同步到期）",
                         "why": "大量部位到期，可能加劇外資進出與尾盤波動",
                         "source_url": "https://global.krx.co.kr/"})
@@ -262,6 +309,91 @@ def settlement_events(days_ahead=45):
         if m == 13:
             y, m = y + 1, 1
     return [e for e in out if today.isoformat() <= e["date"] <= end.isoformat()]
+
+
+_MONTHS = {k: i + 1 for i, k in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"])}
+
+
+def _us_to_tw(d, hhmm):
+    """美東時間 → 台灣時間（自動處理夏令時間）。"""
+    from zoneinfo import ZoneInfo
+    h, mi = hhmm
+    t = datetime(d.year, d.month, d.day, h, mi, tzinfo=ZoneInfo("America/New_York")).astimezone(TW)
+    return t.date(), t.strftime("%H:%M")
+
+
+def parse_fomc(html):
+    """解析 Fed 官網 FOMC 行程，回傳 [(會議最後一天 date, 文字)]。"""
+    import re
+    out = []
+    parts = re.split(r"(\d{4}) FOMC Meetings", html)
+    for i in range(1, len(parts) - 1, 2):
+        year = int(parts[i])
+        body = parts[i + 1]
+        for mon, days in re.findall(r'fomc-meeting__month[^>]*>\s*<strong>([A-Za-z/]+)</strong>.*?fomc-meeting__date[^>]*>\s*([\d\-]+)', body, re.S):
+            last_mon = mon.split("/")[-1][:3].lower()
+            if last_mon not in _MONTHS:
+                continue
+            last_day = int(days.split("-")[-1])
+            try:
+                out.append((date(year, _MONTHS[last_mon], last_day), f"{mon} {days}"))
+            except ValueError:
+                pass
+    return out
+
+
+def parse_bls(html):
+    """解析 BLS 公布行程表，回傳 [(參考月份文字, 公布日 date, (時, 分))]。"""
+    import re
+    out = []
+    for ref, rel, tm in re.findall(r"<td>\s*([A-Z][a-z]{2,4}\.?\s+\d{4})\s*</td>\s*<td>\s*([A-Z][a-z]{2,4}\.?\s+\d{1,2},\s+\d{4})\s*</td>\s*<td>\s*(\d{1,2}:\d{2}\s*[AP]M)\s*</td>", html):
+        mon, day, year = re.match(r"([A-Za-z]+)\.?\s+(\d{1,2}),\s+(\d{4})", rel).groups()
+        h, mi = map(int, re.match(r"(\d{1,2}):(\d{2})", tm).groups())
+        if "PM" in tm and h != 12:
+            h += 12
+        try:
+            out.append((ref, date(int(year), _MONTHS[mon[:3].lower()], int(day)), (h, mi)))
+        except (KeyError, ValueError):
+            pass
+    return out
+
+
+def _ref_month_zh(ref):
+    import re
+    m = re.match(r"([A-Za-z]+)", ref)
+    return f"{_MONTHS.get(m.group(1)[:3].lower(), '')}月" if m else ""
+
+
+def econ_events(days_ahead=45):
+    """從官方網站抓 FOMC、CPI、非農的日期；抓不到就略過（保留手動資料）。"""
+    today = datetime.now(TW).date()
+    end = today + timedelta(days=days_ahead)
+    out = []
+    try:
+        for d, label in parse_fomc(_get("https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm")):
+            twd, twt = _us_to_tw(d, (14, 0))
+            out.append({"id": f"auto_fomc_{d.isoformat()}", "date": twd.isoformat(), "tw_time": twt, "region": "美國",
+                        "event": f"FOMC利率決議（美東{d.month}/{d.day}）",
+                        "why": "聯準會利率決策，左右全球資金成本與股債走勢",
+                        "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"})
+    except Exception as e:
+        print(f"FOMC 行程抓取失敗：{e}", file=sys.stderr)
+    for url, name, why in [
+        ("https://www.bls.gov/schedule/news_release/cpi.htm", "CPI", "通膨是否降溫，決定後續利率方向"),
+        ("https://www.bls.gov/schedule/news_release/empsit.htm", "非農就業報告", "就業太強→升息壓力；太弱→衰退疑慮"),
+    ]:
+        try:
+            for ref, d, hm in parse_bls(_get(url)):
+                twd, twt = _us_to_tw(d, hm)
+                out.append({"id": f"auto_{'cpi' if name == 'CPI' else 'nfp'}_{d.isoformat()}", "date": twd.isoformat(),
+                            "tw_time": twt, "region": "美國", "event": f"{_ref_month_zh(ref)}{name}",
+                            "why": why, "source_url": url})
+        except Exception as e:
+            print(f"{name} 行程抓取失敗：{e}", file=sys.stderr)
+    return [e for e in out if today.isoformat() <= e["date"] <= end.isoformat()]
+
+
+DUP_KEYS = ("結算", "四巫", "SQ", "FOMC", "CPI", "非農")
 
 
 def update_calendar():
@@ -273,12 +405,39 @@ def update_calendar():
     today = datetime.now(TW).date()
     keep = [r for r in rows if not str(r.get("id", "")).startswith("auto_")
             and str(r.get("date", "")) >= (today - timedelta(days=2)).isoformat()]
+
     def dup(e):
+        key = next((k for k in DUP_KEYS if k in e["event"]), None)
         return any(r.get("date") == e["date"] and r.get("region") == e["region"]
-                   and any(k in str(r.get("event", "")) for k in ("結算", "四巫", "SQ")) for r in keep)
-    rows = keep + [e for e in settlement_events() if not dup(e)]
+                   and key and key in str(r.get("event", "")) for r in keep)
+
+    auto = settlement_events() + econ_events()
+    rows = keep + [e for e in auto if not dup(e)]
     rows.sort(key=lambda r: (r.get("date", ""), r.get("tw_time", "")))
     path.write_text(json.dumps({"rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+# ---------- 原本手動的指標：能自動的改成自動 ----------
+def fetch_cpi(rows_by_id):
+    """美國 CPI 年增率：FRED CPIAUCSL，自行計算年增率。"""
+    try:
+        text = _get("https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL")
+        pts = [(d, float(v)) for d, v in csv.reader(io.StringIO(text)) if d[:1].isdigit() and v not in ("", ".")]
+        d1, v1 = pts[-1]
+        _, v0 = pts[-13]
+        _, vp = pts[-2]
+        _, vp0 = pts[-14]
+        yoy, prev_yoy = (v1 / v0 - 1) * 100, (vp / vp0 - 1) * 100
+        m = int(d1[5:7])
+        rows_by_id["us_cpi"] = {
+            "id": "us_cpi", "group": "利率與央行", "name": f"美國CPI年增率（{m}月）", "value": round(yoy, 1), "unit": "%",
+            "change": round((yoy - prev_yoy) * 100), "change_unit": "bp", "as_of": d1,
+            "signal": "red" if yoy >= 4 else "yellow" if yoy >= 3 else "green",
+            "note": "通膨越高，聯準會越難降息；3%以上屬偏高",
+            "source_name": "FRED", "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL"}
+    except Exception as e:
+        print(f"CPI 更新失敗，保留舊值：{e}", file=sys.stderr)
+
 
 
 def main():
@@ -289,6 +448,7 @@ def main():
 
     fetch_yahoo(rows_by_id)
     fetch_fred(rows_by_id)
+    fetch_cpi(rows_by_id)
 
     for i in list(YAHOO) + list(FRED):
         if i not in order:
