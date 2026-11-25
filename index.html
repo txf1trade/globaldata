@@ -80,7 +80,8 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .cal td.n.today { color: var(--bad); font-weight: 600; }
 .event { font-weight: 600; }
 .star { color: var(--warn); margin-right: 4px; }
-.cal tr.keyev td.t b { color: var(--warn); }
+.cal a { text-decoration: none; }
+.cal a:hover { text-decoration: underline; }
 .why { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
 ul.news { list-style: none; margin: 0; padding: 0; }
@@ -92,6 +93,11 @@ summary { cursor: pointer; color: var(--fg); }
 .empty { color: var(--muted); font-size: 13px; }
 @media (max-width: 640px) {
   .key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cal tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .cal td { border: 0; padding: 0; }
+  .cal td.t, .cal td.n { width: auto; }
+  .cal td.n { padding-right: 0; }
+  .cal td:nth-child(3) { grid-column: 1 / 3; margin-top: 2px; }
   .item { grid-template-columns: 8px minmax(0, 1fr) 5.8em 2.4em 4.6em; column-gap: 6px; }
   .eq-row { grid-template-columns: minmax(4.5em, 1fr) 6.2em 4.8em; gap: 8px; }
   .track, .eq-sp { display: none; }
@@ -275,7 +281,7 @@ function drawCal() {
     const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
     const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
     const body = mk('td'); const ev = mk('div', 'event');
-    if (key) { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
+    if (key && calFilter !== 'key') { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
     if (r.region) ev.append(mk('span', 'tag', r.region));
     ev.append(link(r.source_url, r.event || ''));
     const why = mk('div', 'why', r.why || ''); why.title = r.why || '';
