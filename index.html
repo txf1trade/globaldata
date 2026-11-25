@@ -65,12 +65,11 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); column-gap: 28px; }
 .item { display: grid; grid-template-columns: 8px minmax(0, 1fr) 6.2em 2.6em 5em; column-gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .item .dot { margin-top: 0; }
-.item-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-name { font-weight: 600; }
 .item-val { font-weight: 600; white-space: nowrap; text-align: right; }
 .item-unit { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .item .chg { text-align: right; }
-.note { grid-column: 2 / 6; font-size: 12px; color: var(--muted); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-.note.open { white-space: normal; }
+.note { grid-column: 2 / 6; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .src { margin-left: 6px; }
 .cal { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cal td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -81,8 +80,8 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .cal td.n.today { color: var(--bad); font-weight: 600; }
 .event { font-weight: 600; }
 .star { color: var(--warn); margin-right: 4px; }
-.cal tr.key td.t b { color: var(--warn); }
-.why { font-size: 12px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.cal tr.keyev td.t b { color: var(--warn); }
+.why { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
 ul.news { list-style: none; margin: 0; padding: 0; }
 ul.news li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
@@ -162,7 +161,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <details>
     <summary>燈號怎麼判斷、資料從哪來</summary>
-    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。點說明文字可展開全文。這是市場數據與新聞整理，不構成投資建議。</p>
+    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
   </details>
 </div>
 
@@ -253,7 +252,6 @@ function drawList() {
     const src = mk('span', 'src');
     src.append(document.createTextNode(r.manual ? '· 手動 · ' : '· '), link(r.source_url, r.source_name || '來源'));
     note.append(src);
-    note.addEventListener('click', (e) => { if (e.target.tagName !== 'A') note.classList.toggle('open'); });
     it.append(dot, nameWithDate('item-name', r), v, mk('span', 'item-unit', r.unit || ''), chg(r), note);
     box.appendChild(it);
   });
@@ -273,7 +271,7 @@ function drawCal() {
     const p = String(r.date).split('-').map(Number);
     const wd = p.length === 3 ? '(' + WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()] + ')' : '';
     const key = isKeyEvent(r);
-    const tr = mk('tr', key ? 'key' : '');
+    const tr = mk('tr', key ? 'keyev' : '');
     const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
     const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
     const body = mk('td'); const ev = mk('div', 'event');
