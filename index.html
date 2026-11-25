@@ -47,6 +47,8 @@ button:disabled { opacity: .6; cursor: default; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; margin-top: 5px; }
 .dot.red { background: var(--bad); } .dot.yellow { background: var(--warn); } .dot.green { background: var(--ok); }
 .old { font-size: 12px; color: var(--warn); font-weight: 400; margin-left: 4px; }
+.stale { opacity: .5; }
+.stale .old { color: var(--muted); }
 .eq-row { display: grid; grid-template-columns: minmax(5.5em, 1fr) 6.5em 5.5em minmax(40px, 1.2fr); gap: 12px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
 .eq-name { font-weight: 600; }
 .eq-head { padding: 0 0 6px; font-size: 12px; color: var(--muted); }
@@ -152,7 +154,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <details>
     <summary>燈號怎麼判斷、資料從哪來</summary>
-    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，行事曆在 calendar.json。點說明文字可展開全文。這是市場數據與新聞整理，不構成投資建議。</p>
+    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。點說明文字可展開全文。這是市場數據與新聞整理，不構成投資建議。</p>
   </details>
 </div>
 
@@ -188,6 +190,9 @@ function refDate() {
   const n = {}; IND.forEach((r) => { if (r.as_of) n[r.as_of] = (n[r.as_of] || 0) + 1; });
   return Object.keys(n).sort((a, b) => n[b] - n[a] || b.localeCompare(a))[0] || '';
 }
+const daysBetween = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
+// 超過 14 天沒更新的指標視為過舊
+const isStale = (r) => r.as_of && REF && daysBetween(REF, r.as_of) > 14;
 const nameWithDate = (cls, r) => { const e = mk('span', cls, r.name); if (r.as_of && REF && r.as_of !== REF) e.append(mk('span', 'old', '(' + md(r.as_of) + ')')); return e; };
 
 function drawSummary() {
@@ -215,7 +220,7 @@ function drawEq() {
   const maxAbs = Math.max(1, ...rows.map((r) => Math.abs(Number(r.change) || 0)));
   rows.forEach((r) => {
     const c = Number(r.change) || 0;
-    const row = mk('div', 'eq-row');
+    const row = mk('div', 'eq-row' + (isStale(r) ? ' stale' : ''));
     const track = mk('span', 'track'); track.setAttribute('aria-hidden', 'true');
     const f = mk('span', 'fill ' + (c < 0 ? 'down' : 'up')); f.style.width = (Math.abs(c) / maxAbs * 100) + '%'; track.append(f);
     row.append(nameWithDate('eq-name', r), mk('span', 'eq-price', fmt(r.value)), chg(r), track);
@@ -229,7 +234,8 @@ function drawList() {
   const rows = IND.filter((r) => (filter === 'alert' ? r.signal === 'red' || r.signal === 'yellow' : !filter || r.group === filter))
     .sort((a, b) => (order[a.signal] ?? 3) - (order[b.signal] ?? 3));
   rows.forEach((r) => {
-    const it = mk('div', 'item');
+    const it = mk('div', 'item' + (isStale(r) ? ' stale' : ''));
+    if (isStale(r)) it.title = '資料較舊（' + r.as_of + '），請手動更新 indicators.json';
     const dot = mk('span', 'dot ' + (r.signal || '')); dot.title = SIG[r.signal] || '';
     const v = mk('span', 'item-val', fmt(r.value));
     const note = mk('div', 'note', r.note || '');
