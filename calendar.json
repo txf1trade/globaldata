@@ -5,8 +5,8 @@
    "date": "2026-11-26",
    "tw_time": "全日",
    "region": "美國",
-   "event": "感恩節休市（11/27提前收盤）",
-   "why": "交易量少時價格容易大幅波動",
+   "event": "感恩節休市",
+   "why": "11/27提前收盤；交易量少時價格容易大幅波動",
    "source_url": "https://pro.thestreet.com/market-commentary/the-week-ahead-time-for-a-bounce"
   },
   {
@@ -24,7 +24,7 @@
    "tw_time": "13:30",
    "region": "台灣",
    "event": "富台指（SGX）11月合約結算",
-   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
+   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
   },
   {
@@ -68,8 +68,8 @@
    "date": "2026-12-10",
    "tw_time": "03:00",
    "region": "美國",
-   "event": "FOMC利率決議（美東12/8–9會議）",
-   "why": "市場押注升息1碼；看點陣圖與2027年升息路徑",
+   "event": "FOMC利率決議",
+   "why": "美東12/8–9會議；市場押注升息1碼，看點陣圖與2027年升息路徑",
    "source_url": "https://admiralmarkets.com/analytics/traders-blog/fed-rate-decision-december-2026-preview"
   },
   {
@@ -77,8 +77,8 @@
    "date": "2026-12-10",
    "tw_time": "14:20",
    "region": "韓國",
-   "event": "韓股四巫日（指數期貨、選擇權與個股期貨同步到期）",
-   "why": "大量部位到期，可能加劇外資進出與尾盤波動",
+   "event": "韓股四巫日",
+   "why": "指數期貨、選擇權與個股期貨同步到期，可能加劇外資進出與尾盤波動",
    "source_url": "https://global.krx.co.kr/"
   },
   {
@@ -95,7 +95,7 @@
    "date": "2026-12-11",
    "tw_time": "08:00（開盤）",
    "region": "日本",
-   "event": "日經225 季度大結算（メジャーSQ）",
+   "event": "日經225 季度大結算（SQ）",
    "why": "以開盤價結算，開盤前後常出現大額買賣單",
    "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"
   },
@@ -113,7 +113,7 @@
    "date": "2026-12-16",
    "tw_time": "13:30",
    "region": "台灣",
-   "event": "台指期12月合約結算",
+   "event": "台指期12月合約結算（每月第三個週三）",
    "why": "結算價取13:00–13:30平均，結算前多空攻防常使尾盤波動放大",
    "source_url": "https://www.taifex.com.tw/cht/5/fSPCalendar"
   },
@@ -149,8 +149,8 @@
    "date": "2026-12-18",
    "tw_time": "22:30起",
    "region": "美國",
-   "event": "美股四巫日（股指期貨、選擇權、個股期權同步到期）；台道瓊／台那斯達克同日結算",
-   "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北隔天凌晨）波動最大",
+   "event": "美股四巫日",
+   "why": "股指期貨、選擇權、個股期權同步到期，台道瓊／台那斯達克同日結算；收盤前一小時（台北隔天凌晨）波動最大",
    "source_url": "https://www.cmegroup.com/trading/equity-index/"
   },
   {
@@ -158,8 +158,8 @@
    "date": "2026-12-18",
    "tw_time": "中午前後",
    "region": "日本",
-   "event": "日銀利率決議（12/17–18會議）",
-   "why": "日本升息可能引發日圓套利交易平倉，衝擊全球流動性",
+   "event": "日銀利率決議",
+   "why": "12/17–18會議；日本升息可能引發日圓套利交易平倉，衝擊全球流動性",
    "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm"
   },
   {
@@ -177,7 +177,7 @@
    "tw_time": "13:30",
    "region": "台灣",
    "event": "富台指（SGX）12月合約結算",
-   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
+   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
   },
   {
@@ -185,7 +185,7 @@
    "date": "2027-01-08",
    "tw_time": "08:00（開盤）",
    "region": "日本",
-   "event": "日經225 月結算（ミニSQ）",
+   "event": "日經225 月結算（SQ）",
    "why": "以開盤價結算，開盤前後常出現大額買賣單",
    "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"
   }
