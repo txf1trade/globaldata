@@ -1,22 +1,31 @@
 {
  "rows": [
   {
-   "id": "gdp_pce_nov",
-   "date": "2026-11-25",
-   "tw_time": "21:30",
-   "region": "美國",
-   "event": "第3季GDP二估＋10月PCE物價",
-   "why": "PCE是Fed最看重的通膨指標，影響12月升息幅度",
-   "source_url": "https://www.bea.gov/news/schedule"
-  },
-  {
    "id": "thanksgiving",
    "date": "2026-11-26",
    "tw_time": "全日",
    "region": "美國",
    "event": "感恩節休市（11/27提前收盤）",
    "why": "交易量少時價格容易大幅波動",
-   "source_url": ""
+   "source_url": "https://pro.thestreet.com/market-commentary/the-week-ahead-time-for-a-bounce"
+  },
+  {
+   "id": "tokyo_cpi",
+   "date": "2026-11-27",
+   "tw_time": "07:30",
+   "region": "日本",
+   "event": "11月東京CPI",
+   "why": "日本通膨領先指標，影響日銀12月是否升息",
+   "source_url": "https://pro.thestreet.com/market-commentary/the-week-ahead-time-for-a-bounce"
+  },
+  {
+   "id": "auto_sgx_202611",
+   "date": "2026-11-27",
+   "tw_time": "13:30",
+   "region": "台灣",
+   "event": "富台指（SGX）11月合約結算",
+   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
+   "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
   },
   {
    "id": "jolts",
@@ -26,6 +35,24 @@
    "event": "10月JOLTS職缺",
    "why": "判斷勞動市場是否降溫",
    "source_url": "https://fedratecalc.com/us-economic-calendar/"
+  },
+  {
+   "id": "ism_mfg",
+   "date": "2026-12-01",
+   "tw_time": "23:00",
+   "region": "美國",
+   "event": "11月ISM製造業指數",
+   "why": "景氣榮枯線50上下，反映製造業是否轉弱",
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+  },
+  {
+   "id": "ism_svc",
+   "date": "2026-12-03",
+   "tw_time": "23:00",
+   "region": "美國",
+   "event": "11月ISM服務業指數",
+   "why": "服務業物價分項是Fed關注的通膨線索",
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
   },
   {
    "id": "nfp",
@@ -41,9 +68,18 @@
    "date": "2026-12-10",
    "tw_time": "03:00",
    "region": "美國",
-   "event": "FOMC利率決議（美東12/9）",
+   "event": "FOMC利率決議（美東12/8–9會議）",
    "why": "市場押注升息1碼；看點陣圖與2027年升息路徑",
    "source_url": "https://admiralmarkets.com/analytics/traders-blog/fed-rate-decision-december-2026-preview"
+  },
+  {
+   "id": "auto_krquad_202612",
+   "date": "2026-12-10",
+   "tw_time": "14:20",
+   "region": "韓國",
+   "event": "韓股四巫日（指數期貨、選擇權與個股期貨同步到期）",
+   "why": "大量部位到期，可能加劇外資進出與尾盤波動",
+   "source_url": "https://global.krx.co.kr/"
   },
   {
    "id": "cpi_dec",
@@ -55,6 +91,15 @@
    "source_url": "https://marketupdate.net/us-economic-calendar/"
   },
   {
+   "id": "auto_sq_202612",
+   "date": "2026-12-11",
+   "tw_time": "08:00（開盤）",
+   "region": "日本",
+   "event": "日經225 季度大結算（メジャーSQ）",
+   "why": "以開盤價結算，開盤前後常出現大額買賣單",
+   "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"
+  },
+  {
    "id": "ppi",
    "date": "2026-12-15",
    "tw_time": "21:30",
@@ -64,6 +109,33 @@
    "source_url": "https://www.smartcalendars.ai/en/feeds/us-economic-calendar"
   },
   {
+   "id": "auto_txf_202612",
+   "date": "2026-12-16",
+   "tw_time": "13:30",
+   "region": "台灣",
+   "event": "台指期12月合約結算（每月第三個週三）",
+   "why": "結算價取13:00–13:30平均，結算前多空攻防常使尾盤波動放大",
+   "source_url": "https://www.taifex.com.tw/cht/5/fSPCalendar"
+  },
+  {
+   "id": "retail",
+   "date": "2026-12-16",
+   "tw_time": "21:30",
+   "region": "美國",
+   "event": "11月零售銷售",
+   "why": "消費是否在股災後降溫",
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+  },
+  {
+   "id": "boe_dec",
+   "date": "2026-12-17",
+   "tw_time": "20:00",
+   "region": "英國",
+   "event": "英國央行利率決議",
+   "why": "主要央行同步緊縮與否，影響全球債市",
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+  },
+  {
    "id": "ecb_dec",
    "date": "2026-12-17",
    "tw_time": "21:15",
@@ -71,6 +143,15 @@
    "event": "歐洲央行利率決議",
    "why": "歐洲利率方向影響美元與全球債市資金流向",
    "source_url": "https://www.financecalendar.com/event/ecb-rate-decision-december-2026/"
+  },
+  {
+   "id": "auto_quad_202612",
+   "date": "2026-12-18",
+   "tw_time": "22:30起",
+   "region": "美國",
+   "event": "美股四巫日（股指期貨、選擇權、個股期權同步到期）；台道瓊／台那斯達克同日結算",
+   "why": "季度最大的衍生品到期日，成交量暴增；收盤前一小時（台北週六04:00–05:00）波動最大",
+   "source_url": "https://www.cmegroup.com/trading/equity-index/"
   },
   {
    "id": "boj",
@@ -89,6 +170,24 @@
    "event": "第3季GDP三估＋11月PCE",
    "why": "年底前最後一份重要通膨數據",
    "source_url": "https://www.financecalendar.com/event/us-personal-income-and-outlays-pce-december-2026/"
+  },
+  {
+   "id": "auto_sgx_202612",
+   "date": "2026-12-30",
+   "tw_time": "13:30",
+   "region": "台灣",
+   "event": "富台指（SGX）12月合約結算",
+   "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動（遇假日會調整）",
+   "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
+  },
+  {
+   "id": "auto_sq_202701",
+   "date": "2027-01-08",
+   "tw_time": "08:00（開盤）",
+   "region": "日本",
+   "event": "日經225 月結算（ミニSQ）",
+   "why": "以開盤價結算，開盤前後常出現大額買賣單",
+   "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"
   }
  ]
 }
