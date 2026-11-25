@@ -80,6 +80,8 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .cal td.n.soon { color: var(--warn); font-weight: 600; }
 .cal td.n.today { color: var(--bad); font-weight: 600; }
 .event { font-weight: 600; }
+.star { color: var(--warn); margin-right: 4px; }
+.cal tr.key td.t b { color: var(--warn); }
 .why { font-size: 12px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
 ul.news { list-style: none; margin: 0; padding: 0; }
@@ -131,7 +133,13 @@ summary { cursor: pointer; color: var(--fg); }
   </section>
 
   <section>
-    <h2>接下來要注意（台灣時間）</h2>
+    <div class="bar">
+      <h2>接下來要注意（台灣時間）</h2>
+      <select id="calfilter" aria-label="篩選行事曆">
+        <option value="key">只看重要</option>
+        <option value="">全部事件</option>
+      </select>
+    </div>
     <div id="cal"></div>
   </section>
 
@@ -183,7 +191,10 @@ const daysUntil = (s) => {
 const twNow = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 16).replace('T', ' ').replace('-', '/');
 const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
 
-let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '';
+let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '', calFilter = 'key';
+// 重要事件：calendar.json 可用 "importance": "high" / "normal" 指定，否則依關鍵字判斷
+const KEY_EVENT = /FOMC|非農|PCE|日銀|四巫|台指期|富台指|大結算/;
+const isKeyEvent = (r) => (r.importance ? r.importance === 'high' : KEY_EVENT.test(r.event || '') || (/CPI/.test(r.event || '') && r.region === '美國'));
 const md = (d) => String(d || '').slice(5).replace('-', '/');
 // 資料日期：多數指標的日期（同票取較新）
 function refDate() {
@@ -251,19 +262,22 @@ function drawList() {
 
 function drawCal() {
   const box = $('cal'); box.replaceChildren();
-  const all = CAL.slice().sort((a, b) => String(a.date + a.tw_time).localeCompare(String(b.date + b.tw_time)))
+  const upcoming = CAL.slice().sort((a, b) => String(a.date + a.tw_time).localeCompare(String(b.date + b.tw_time)))
     .filter((r) => { const n = daysUntil(r.date); return n === null || n >= 0; });
-  if (!all.length) return box.appendChild(mk('p', 'empty', '近期沒有排定的事件'));
+  const all = calFilter === 'key' ? upcoming.filter(isKeyEvent) : upcoming;
+  if (!all.length) return box.appendChild(mk('p', 'empty', calFilter === 'key' ? '近期沒有重要事件' : '近期沒有排定的事件'));
   const WD = '日一二三四五六';
   const table = mk('table', 'cal'); const tb = mk('tbody'); table.append(tb);
-  (allCal ? all : all.slice(0, 5)).forEach((r) => {
+  (allCal ? all : all.slice(0, 6)).forEach((r) => {
     const n = daysUntil(r.date);
     const p = String(r.date).split('-').map(Number);
     const wd = p.length === 3 ? '(' + WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()] + ')' : '';
-    const tr = mk('tr');
-    const t = mk('td', 't'); t.append(mk('b', '', String(r.date).slice(5).replace('-', '/') + wd), document.createTextNode(r.tw_time || ''));
+    const key = isKeyEvent(r);
+    const tr = mk('tr', key ? 'key' : '');
+    const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
     const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
     const body = mk('td'); const ev = mk('div', 'event');
+    if (key) { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
     if (r.region) ev.append(mk('span', 'tag', r.region));
     ev.append(link(r.source_url, r.event || ''));
     const why = mk('div', 'why', r.why || ''); why.title = r.why || '';
@@ -271,10 +285,17 @@ function drawCal() {
     tr.append(t, cd, body); tb.appendChild(tr);
   });
   box.appendChild(table);
-  if (all.length > 5) {
+  const hidden = upcoming.length - all.length;
+  const row = mk('div'); row.style.display = 'flex'; row.style.gap = '16px';
+  if (all.length > 6) {
     const b = mk('button', 'more', allCal ? '收起' : `顯示全部 ${all.length} 項`); b.type = 'button';
-    b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); box.appendChild(b);
+    b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); row.append(b);
   }
+  if (calFilter === 'key' && hidden > 0) {
+    const b = mk('button', 'more', `另有 ${hidden} 項一般事件`); b.type = 'button';
+    b.addEventListener('click', () => { calFilter = ''; $('calfilter').value = ''; drawCal(); }); row.append(b);
+  }
+  if (row.childNodes.length) box.appendChild(row);
 }
 
 function drawNews() {
@@ -326,6 +347,7 @@ function loadAll() {
 
 $('reload').addEventListener('click', loadAll);
 $('filter').addEventListener('change', (e) => { filter = e.target.value; drawList(); });
+$('calfilter').addEventListener('change', (e) => { calFilter = e.target.value; allCal = false; drawCal(); });
 loadAll();
 }
 </script>
