@@ -10,11 +10,11 @@
 <style>
 :root {
   --fg: #1f1e1c; --muted: #6b6862; --bg: #faf9f6; --panel: #ffffff; --line: #e6e3dc; --track: #ece9e2;
-  --bad: #c2412d; --warn: #b7791f; --ok: #2f7d4f; --radius: 10px;
+  --bad: #c2412d; --warn: #b7791f; --ok: #2f7d4f; --hol: #2f63b8; --radius: 10px;
 }
 @media (prefers-color-scheme: dark) {
   :root { --fg: #ecebe8; --muted: #a29f98; --bg: #1b1a18; --panel: #24231f; --line: #3a3833; --track: #34322d;
-    --bad: #e8705c; --warn: #e0a84a; --ok: #5fbf85; }
+    --bad: #e8705c; --warn: #e0a84a; --ok: #5fbf85; --hol: #7aa5ec; }
 }
 * { box-sizing: border-box; min-width: 0; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 "Inter", "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif; font-feature-settings: "tnum"; }
@@ -83,6 +83,7 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .event { font-weight: 600; }
 .star { color: var(--warn); margin-right: 4px; }
 .event.crit a, .event.crit > span:last-child { color: var(--bad); }
+.event.hol a, .event.hol > span:last-child { color: var(--hol); }
 .cal a { text-decoration: none; }
 .cal a:hover { text-decoration: underline; }
 .why { display: none; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
@@ -174,7 +175,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <details>
     <summary>燈號怎麼判斷、資料從哪來</summary>
-    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。行事曆中紅色字為最重要事件（FOMC、美國CPI、非農、台指期與富台指結算、美股四巫日、日銀、美股與台股休市）。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
+    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。行事曆中紅色字為最重要事件（FOMC、美國CPI、非農、台指期與富台指結算、美股四巫日、日銀）；藍色字為美股、台股休市與提前收盤。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
   </details>
 </div>
 
@@ -205,11 +206,13 @@ const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
 
 let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '', calFilter = 'key';
 // 重要程度：calendar.json 可用 "importance": "critical"（最重要，紅色）/ "high"（重要）/ "normal"（一般）指定，否則依關鍵字判斷
-const CRIT_EVENT = /FOMC|非農|台指期|富台指|美股四巫|日銀|休市|提前收盤/;
+const CRIT_EVENT = /FOMC|非農|台指期|富台指|美股四巫|日銀/;
+const HOLIDAY_EVENT = /休市|提前收盤/;
 const KEY_EVENT = /PCE|四巫|大結算|SQ/;
 const eventLevel = (r) => {
   if (r.importance) return r.importance;
   const e = r.event || '';
+  if (HOLIDAY_EVENT.test(e)) return 'holiday';
   if (CRIT_EVENT.test(e) || (/CPI/.test(e) && r.region === '美國')) return 'critical';
   if (KEY_EVENT.test(e)) return 'high';
   return 'normal';
@@ -297,7 +300,7 @@ function drawCal() {
     const tr = mk('tr', (key ? 'keyev' : '') + (detail ? ' open' : ''));
     const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
     const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
-    const body = mk('td'); const ev = mk('div', 'event' + (eventLevel(r) === 'critical' ? ' crit' : ''));
+    const body = mk('td'); const ev = mk('div', 'event' + (eventLevel(r) === 'critical' ? ' crit' : eventLevel(r) === 'holiday' ? ' hol' : ''));
     if (key && calFilter !== 'key') { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
     if (r.region) ev.append(mk('span', 'tag', r.region));
     ev.append(link(r.source_url, r.event || ''));
