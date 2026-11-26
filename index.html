@@ -82,6 +82,7 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .cal td.n.today { color: var(--bad); font-weight: 600; }
 .event { font-weight: 600; }
 .star { color: var(--warn); margin-right: 4px; }
+.event.crit a, .event.crit > span:last-child { color: var(--bad); }
 .cal a { text-decoration: none; }
 .cal a:hover { text-decoration: underline; }
 .why { display: none; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
@@ -172,7 +173,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <details>
     <summary>燈號怎麼判斷、資料從哪來</summary>
-    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
+    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。行事曆中紅色字為最重要事件（FOMC、美國CPI、非農、台指期結算、美股四巫日、日銀）。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
   </details>
 </div>
 
@@ -202,9 +203,17 @@ const twNow = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 16)
 const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
 
 let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '', calFilter = 'key';
-// 重要事件：calendar.json 可用 "importance": "high" / "normal" 指定，否則依關鍵字判斷
-const KEY_EVENT = /FOMC|非農|PCE|日銀|四巫|台指期|富台指|大結算/;
-const isKeyEvent = (r) => (r.importance ? r.importance === 'high' : KEY_EVENT.test(r.event || '') || (/CPI/.test(r.event || '') && r.region === '美國'));
+// 重要程度：calendar.json 可用 "importance": "critical"（最重要，紅色）/ "high"（重要）/ "normal"（一般）指定，否則依關鍵字判斷
+const CRIT_EVENT = /FOMC|非農|台指期|美股四巫|日銀/;
+const KEY_EVENT = /PCE|四巫|富台指|大結算|SQ/;
+const eventLevel = (r) => {
+  if (r.importance) return r.importance;
+  const e = r.event || '';
+  if (CRIT_EVENT.test(e) || (/CPI/.test(e) && r.region === '美國')) return 'critical';
+  if (KEY_EVENT.test(e)) return 'high';
+  return 'normal';
+};
+const isKeyEvent = (r) => eventLevel(r) !== 'normal';
 const md = (d) => String(d || '').slice(5).replace('-', '/');
 // 資料日期：多數指標的日期（同票取較新）
 function refDate() {
@@ -286,7 +295,7 @@ function drawCal() {
     const tr = mk('tr', key ? 'keyev' : '');
     const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
     const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
-    const body = mk('td'); const ev = mk('div', 'event');
+    const body = mk('td'); const ev = mk('div', 'event' + (eventLevel(r) === 'critical' ? ' crit' : ''));
     if (key && calFilter !== 'key') { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
     if (r.region) ev.append(mk('span', 'tag', r.region));
     ev.append(link(r.source_url, r.event || ''));
