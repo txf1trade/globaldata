@@ -393,7 +393,56 @@ def econ_events(days_ahead=45):
     return [e for e in out if today.isoformat() <= e["date"] <= end.isoformat()]
 
 
-DUP_KEYS = ("結算", "四巫", "SQ", "FOMC", "CPI", "非農")
+HOLIDAY_ZH = {
+    "Thanksgiving": "感恩節", "Christmas": "聖誕節", "New Year's Day": "元旦", "Dr. Martin Luther King Jr. Day": "金恩紀念日",
+    "President's Day": "總統日", "Presidents' Day": "總統日", "Good Friday": "耶穌受難日", "Memorial Day": "陣亡將士紀念日",
+    "Juneteenth": "六月節", "Independence Day": "獨立紀念日", "Labor Day": "勞動節", "Labour Day": "勞動節",
+    "Constitution Day": "行憲紀念日", "Peace Memorial Day": "和平紀念日", "Children's Day": "兒童節",
+    "Tomb Sweeping Day": "清明節", "Dragon Boat Festival": "端午節", "Mid-Autumn Festival": "中秋節", "National Day": "國慶日",
+}
+
+
+def holiday_events(days_ahead=45):
+    """依交易所休市曆列出美股、台股休市日與美股提前收盤日。"""
+    today = datetime.now(TW).date()
+    end = today + timedelta(days=days_ahead)
+    out = []
+    for code, region, label, why in [
+        ("XNYS", "美國", "美股", "美股休市，台股與台指期夜盤少了美股方向，流動性較低、隔天容易反映兩天消息"),
+        ("XTAI", "台灣", "台股", "台股與台指期休市，留意休市期間國際市場變化，復市開盤可能跳空"),
+    ]:
+        cal = _cal(code)
+        if cal is None:
+            continue
+        names = {}
+        try:
+            h = cal.regular_holidays.holidays(start=str(today), end=str(end), return_name=True)
+            names = {d.date(): n for d, n in h.items()}
+        except Exception:
+            pass
+        d = today
+        while d <= end:
+            if d.weekday() < 5 and not _is_session(cal, d):
+                zh = HOLIDAY_ZH.get(names.get(d, ""), "")
+                out.append({"id": f"auto_hol_{code}_{d.isoformat()}", "date": d.isoformat(), "tw_time": "全日", "region": region,
+                            "event": f"{label}休市" + (f"（{zh}）" if zh else ""), "why": why,
+                            "source_url": "https://www.nyse.com/markets/hours-calendars" if code == "XNYS" else "https://www.twse.com.tw/zh/trading/holiday.html"})
+            d += timedelta(days=1)
+        if code == "XNYS":
+            try:
+                ec = cal.early_closes
+                for ts in ec[(ec >= str(today)) & (ec <= str(end))]:
+                    d = ts.date()
+                    twd, twt = _us_to_tw(d, (13, 0))
+                    out.append({"id": f"auto_early_{d.isoformat()}", "date": d.isoformat(), "tw_time": "提前收盤", "region": "美國",
+                                "event": "美股提前收盤", "why": f"美東13:00收盤（台北{twd.month}/{twd.day} {twt}），交易量少、價格容易大幅波動",
+                                "source_url": "https://www.nyse.com/markets/hours-calendars"})
+            except Exception as e:
+                print(f"提前收盤日讀取失敗：{e}", file=sys.stderr)
+    return out
+
+
+DUP_KEYS = ("結算", "四巫", "SQ", "FOMC", "CPI", "非農", "休市", "提前收盤")
 
 
 def update_calendar():
@@ -411,7 +460,7 @@ def update_calendar():
         return any(r.get("date") == e["date"] and r.get("region") == e["region"]
                    and key and key in str(r.get("event", "")) for r in keep)
 
-    auto = settlement_events() + econ_events()
+    auto = settlement_events() + econ_events() + holiday_events()
     rows = keep + [e for e in auto if not dup(e)]
     rows.sort(key=lambda r: (r.get("date", ""), r.get("tw_time", "")))
     path.write_text(json.dumps({"rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
