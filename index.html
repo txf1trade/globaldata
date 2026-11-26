@@ -149,6 +149,7 @@ summary { cursor: pointer; color: var(--fg); }
       <select id="calfilter" aria-label="篩選行事曆">
         <option value="key">只看重要</option>
         <option value="">全部事件</option>
+        <option value="detail">詳細（全部＋說明）</option>
       </select>
     </div>
     <div id="cal"></div>
@@ -173,7 +174,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <details>
     <summary>燈號怎麼判斷、資料從哪來</summary>
-    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。行事曆中紅色字為最重要事件（FOMC、美國CPI、非農、台指期結算、美股四巫日、日銀）。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
+    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。行事曆中紅色字為最重要事件（FOMC、美國CPI、非農、台指期與富台指結算、美股四巫日、日銀、美股與台股休市）。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
   </details>
 </div>
 
@@ -204,8 +205,8 @@ const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
 
 let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '', calFilter = 'key';
 // 重要程度：calendar.json 可用 "importance": "critical"（最重要，紅色）/ "high"（重要）/ "normal"（一般）指定，否則依關鍵字判斷
-const CRIT_EVENT = /FOMC|非農|台指期|美股四巫|日銀/;
-const KEY_EVENT = /PCE|四巫|富台指|大結算|SQ/;
+const CRIT_EVENT = /FOMC|非農|台指期|富台指|美股四巫|日銀|休市|提前收盤/;
+const KEY_EVENT = /PCE|四巫|大結算|SQ/;
 const eventLevel = (r) => {
   if (r.importance) return r.importance;
   const e = r.event || '';
@@ -283,16 +284,17 @@ function drawCal() {
   const box = $('cal'); box.replaceChildren();
   const upcoming = CAL.slice().sort((a, b) => String(a.date + a.tw_time).localeCompare(String(b.date + b.tw_time)))
     .filter((r) => { const n = daysUntil(r.date); return n === null || n >= 0; });
+  const detail = calFilter === 'detail';
   const all = calFilter === 'key' ? upcoming.filter(isKeyEvent) : upcoming;
   if (!all.length) return box.appendChild(mk('p', 'empty', calFilter === 'key' ? '近期沒有重要事件' : '近期沒有排定的事件'));
   const WD = '日一二三四五六';
   const table = mk('table', 'cal'); const tb = mk('tbody'); table.append(tb);
-  (allCal ? all : all.slice(0, 5)).forEach((r) => {
+  (allCal || detail ? all : all.slice(0, 5)).forEach((r) => {
     const n = daysUntil(r.date);
     const p = String(r.date).split('-').map(Number);
     const wd = p.length === 3 ? '(' + WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()] + ')' : '';
     const key = isKeyEvent(r);
-    const tr = mk('tr', key ? 'keyev' : '');
+    const tr = mk('tr', (key ? 'keyev' : '') + (detail ? ' open' : ''));
     const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
     const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
     const body = mk('td'); const ev = mk('div', 'event' + (eventLevel(r) === 'critical' ? ' crit' : ''));
@@ -307,7 +309,7 @@ function drawCal() {
   box.appendChild(table);
   const hidden = upcoming.length - all.length;
   const row = mk('div'); row.style.display = 'flex'; row.style.gap = '16px';
-  if (all.length > 5) {
+  if (all.length > 5 && !detail) {
     const b = mk('button', 'more', allCal ? '收起' : `顯示全部 ${all.length} 項`); b.type = 'button';
     b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); row.append(b);
   }
