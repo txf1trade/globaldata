@@ -28,6 +28,15 @@
    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
   },
   {
+   "id": "auto_early_2026-11-27",
+   "date": "2026-11-27",
+   "tw_time": "提前收盤",
+   "region": "美國",
+   "event": "美股提前收盤",
+   "why": "美東13:00收盤（台北11/28 02:00），交易量少、價格容易大幅波動",
+   "source_url": "https://www.nyse.com/markets/hours-calendars"
+  },
+  {
    "id": "jolts",
    "date": "2026-12-01",
    "tw_time": "23:00",
@@ -172,6 +181,33 @@
    "source_url": "https://www.financecalendar.com/event/us-personal-income-and-outlays-pce-december-2026/"
   },
   {
+   "id": "auto_early_2026-12-24",
+   "date": "2026-12-24",
+   "tw_time": "提前收盤",
+   "region": "美國",
+   "event": "美股提前收盤",
+   "why": "美東13:00收盤（台北12/25 02:00），交易量少、價格容易大幅波動",
+   "source_url": "https://www.nyse.com/markets/hours-calendars"
+  },
+  {
+   "id": "auto_hol_XNYS_2026-12-25",
+   "date": "2026-12-25",
+   "tw_time": "全日",
+   "region": "美國",
+   "event": "美股休市（聖誕節）",
+   "why": "美股休市，台股與台指期夜盤少了美股方向，流動性較低、隔天容易反映兩天消息",
+   "source_url": "https://www.nyse.com/markets/hours-calendars"
+  },
+  {
+   "id": "auto_hol_XTAI_2026-12-25",
+   "date": "2026-12-25",
+   "tw_time": "全日",
+   "region": "台灣",
+   "event": "台股休市（行憲紀念日）",
+   "why": "台股與台指期休市，留意休市期間國際市場變化，復市開盤可能跳空",
+   "source_url": "https://www.twse.com.tw/zh/trading/holiday.html"
+  },
+  {
    "id": "auto_sgx_202612",
    "date": "2026-12-30",
    "tw_time": "13:30",
@@ -179,6 +215,24 @@
    "event": "富台指（SGX）12月合約結算",
    "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"
+  },
+  {
+   "id": "auto_hol_XNYS_2027-01-01",
+   "date": "2027-01-01",
+   "tw_time": "全日",
+   "region": "美國",
+   "event": "美股休市（元旦）",
+   "why": "美股休市，台股與台指期夜盤少了美股方向，流動性較低、隔天容易反映兩天消息",
+   "source_url": "https://www.nyse.com/markets/hours-calendars"
+  },
+  {
+   "id": "auto_hol_XTAI_2027-01-01",
+   "date": "2027-01-01",
+   "tw_time": "全日",
+   "region": "台灣",
+   "event": "台股休市（元旦）",
+   "why": "台股與台指期休市，留意休市期間國際市場變化，復市開盤可能跳空",
+   "source_url": "https://www.twse.com.tw/zh/trading/holiday.html"
   },
   {
    "id": "auto_sq_202701",
