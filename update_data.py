@@ -1,498 +1,626 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="市場風險">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" id="touch-icon" href="icons/icon-3.png">
-<link rel="icon" type="image/png" id="fav-icon" href="icons/icon-3.png">
-<title>全球市場風險監控</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --fg: #1f1e1c; --muted: #6b6862; --bg: #faf9f6; --panel: #ffffff; --line: #e6e3dc; --track: #ece9e2;
-  --bad: #c2412d; --warn: #b7791f; --ok: #2f7d4f; --hol: #2f63b8; --radius: 10px;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --fg: #ecebe8; --muted: #a29f98; --bg: #1b1a18; --panel: #24231f; --line: #3a3833; --track: #34322d;
-    --bad: #e8705c; --warn: #e0a84a; --ok: #5fbf85; --hol: #7aa5ec; }
-}
-* { box-sizing: border-box; min-width: 0; }
-body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 "Inter", "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif; font-feature-settings: "tnum"; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 14px 14px 40px; display: flex; flex-direction: column; gap: 20px; }
-h1 { font-weight: 700; font-size: 20px; margin: 0; letter-spacing: .02em; }
-h2 { font-size: 16px; font-weight: 700; margin: 0 0 6px; }
-a { color: inherit; }
-.sub { color: var(--muted); font-size: 12px; margin: 2px 0 0; }
-.head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.head-l { min-width: 0; }
-.btns { display: flex; gap: 6px; flex: none; }
-button, .btn { font: inherit; font-size: 12px; padding: 5px 9px; white-space: nowrap; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; text-decoration: none; }
-button:hover, .btn:hover { border-color: var(--muted); }
-button:disabled { opacity: .6; cursor: default; }
-.hero { display: flex; flex-direction: column; gap: 8px; }
-.verdict { display: flex; align-items: center; gap: 6px 14px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
-.verdict.red { border-left-color: var(--bad); } .verdict.yellow { border-left-color: var(--warn); } .verdict.green { border-left-color: var(--ok); }
-.label { font-size: 12px; color: var(--muted); }
-.level { font-size: 22px; font-weight: 700; line-height: 1.2; letter-spacing: .04em; }
-.level.red, .c-red { color: var(--bad); } .level.yellow, .c-yellow { color: var(--warn); } .level.green, .c-green { color: var(--ok); }
-.counts { display: flex; gap: 12px; font-size: 13px; margin-left: auto; }
-.counts b { font-size: 16px; margin-right: 2px; }
-.key { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 7px 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; align-items: baseline; }
-.kpi-name { grid-column: 1 / 3; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kpi-val { font-size: 17px; font-weight: 700; line-height: 1.3; white-space: nowrap; }
-.unit { font-size: 11px; color: var(--muted); margin-left: 2px; font-weight: 400; }
-.chg { font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
-.chg.down { color: var(--bad); } .chg.up { color: var(--ok); } .chg.flat { color: var(--muted); }
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; margin-top: 5px; }
-.dot.red { background: var(--bad); } .dot.yellow { background: var(--warn); } .dot.green { background: var(--ok); }
-.old { font-size: 12px; color: var(--warn); font-weight: 400; margin-left: 4px; }
-.stale { opacity: .5; }
-.stale .old { color: var(--muted); }
-.eq-row { display: grid; grid-template-columns: minmax(5.5em, 1fr) 6.5em 5.5em minmax(40px, 1.2fr); gap: 12px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
-.eq-name { font-weight: 600; }
-.eq-head { padding: 0 0 6px; font-size: 12px; color: var(--muted); }
-.eq-head span:nth-child(2), .eq-head span:nth-child(3) { text-align: right; }
-.eq-date { text-align: right; font-size: 12px; color: var(--muted); }
-.eq-price { text-align: right; font-weight: 600; }
-.eq-row .chg { text-align: right; font-size: 14px; }
-.tog { cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
-.track { height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
-.fill { display: block; height: 100%; border-radius: 4px; }
-.fill.down { background: var(--bad); } .fill.up { background: var(--ok); }
-.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
-.bar h2 { margin: 0; }
-select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
-.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); column-gap: 28px; }
-.item { display: grid; grid-template-columns: 8px minmax(0, 1fr) 6.2em 2.6em 5em; column-gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
-.item .dot { margin-top: 0; }
-.item-name { font-weight: 600; }
-.item-val { font-weight: 600; white-space: nowrap; text-align: right; }
-.item-unit { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.item .chg { text-align: right; }
-.note { display: none; grid-column: 2 / 6; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
-.item { cursor: pointer; }
-.item.open .note { display: block; }
-.src { margin-left: 6px; }
-.cal { width: 100%; border-collapse: collapse; font-size: 14px; }
-.cal td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
-.cal td.t { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; width: 1%; }
-.cal td.t b { color: var(--fg); font-weight: 600; margin-right: 4px; }
-.cal td.n { white-space: nowrap; width: 1%; text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); padding-right: 12px; }
-.cal td.n.soon { color: var(--warn); font-weight: 600; }
-.cal td.n.today { color: var(--bad); font-weight: 600; }
-.event { font-weight: 600; }
-.star { color: var(--warn); margin-right: 4px; }
-.event.crit a, .event.crit > span:last-child { color: var(--bad); }
-.event.hol a, .event.hol > span:last-child { color: var(--hol); }
-.cal a { text-decoration: none; }
-.cal a:hover { text-decoration: underline; }
-.why { display: none; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
-.cal tr { cursor: pointer; }
-.result { font-size: 13px; margin-top: 2px; font-variant-numeric: tabular-nums; }
-.nums { font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
-.lab { color: var(--muted); }
-.fc { font-weight: 600; }
-.guide { margin-top: 4px; padding: 6px 8px; border-left: 3px solid var(--line); background: var(--panel); border-radius: 4px; color: var(--fg); }
-.guide b { font-weight: 600; }
-.cal tr.open .why { display: block; }
-.hint { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 6px; }
-.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
-ul.news { list-style: none; margin: 0; padding: 0; }
-ul.news li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--line); }
-.date { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; margin-right: 8px; }
-.more { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 8px 0; text-decoration: underline; }
-details { color: var(--muted); font-size: 13px; line-height: 1.7; }
-summary { cursor: pointer; color: var(--fg); }
-.empty { color: var(--muted); font-size: 13px; }
-.icons { display: flex; gap: 14px; margin: 8px 0 4px; }
-.icons button { padding: 4px; border-radius: 16px; border: 2px solid transparent; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
-.icons button img { width: 60px; height: 60px; border-radius: 13px; display: block; }
-.icons button.on { border-color: var(--fg); color: var(--fg); font-weight: 600; }
-/* 加到主畫面後的下拉更新 */
-.standalone body { overscroll-behavior-y: contain; }
-.standalone .wrap { padding-top: calc(14px + env(safe-area-inset-top)); }
-#ptr { position: fixed; left: 0; right: 0; top: env(safe-area-inset-top); height: 0; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; font-size: 13px; color: var(--muted); background: var(--bg); z-index: 10; pointer-events: none; }
-#ptr span { padding-bottom: 10px; }
-#ptr.go { transition: height .2s; }
-@media (max-width: 640px) {
-  .key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .cal tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding: 8px 0; border-bottom: 1px solid var(--line); }
-  .cal td { border: 0; padding: 0; }
-  .cal td.t, .cal td.n { width: auto; }
-  .cal td.n { padding-right: 0; }
-  .cal td:nth-child(3) { grid-column: 1 / 3; margin-top: 2px; }
-  .item { grid-template-columns: 8px minmax(0, 1fr) 5.8em 2.4em 4.6em; column-gap: 6px; }
-  .eq-row { grid-template-columns: minmax(4.5em, 1fr) 6.2em 4.8em; gap: 8px; }
-  .track, .eq-sp { display: none; }
-  .list { grid-template-columns: minmax(0, 1fr); }
-}
-</style>
-</head>
-<body>
-<div id="ptr" aria-hidden="true"><span></span></div>
-<div class="wrap">
-  <header>
-    <div class="head">
-      <h1>全球市場風險監控</h1>
-      <div class="btns">
-        <button id="reload" type="button">重新載入</button>
-        <a id="run-update" class="btn" target="_blank" rel="noopener" hidden>抓新數據</a>
-      </div>
-    </div>
-    <p class="sub">資料日期 <b id="asof">—</b>（括號內為日期不同的項目）· 更新 <span id="updated">—</span> · 讀取 <span id="loaded">—</span> <span id="status" aria-live="polite"></span></p>
-  </header>
+"""
+每日更新 indicators.json、headlines.json、meta.json（都放在 repo 根目錄）。
 
-  <section class="hero">
-    <div class="verdict" id="verdict">
-      <span class="label">整體風險</span>
-      <span class="level" id="level">—</span>
-      <span class="counts">
-        <span class="c-red"><b id="n-red">—</b>紅</span>
-        <span class="c-yellow"><b id="n-yellow">—</b>黃</span>
-        <span class="c-green"><b id="n-green">—</b>綠</span>
-      </span>
-    </div>
-    <div class="key" id="key" aria-label="四大重點指標"></div>
-  </section>
+- 行情（股市指數、VIX、美債、黃金、比特幣、原油、美元、日圓）：Yahoo Finance（yfinance）
+- 高收益債利差、美國2年期公債殖利率：FRED 公開 CSV（不需要 API key）
+- 新聞：Google 新聞 RSS（繁體中文）
+- 抓不到的指標會保留上一次的數值與日期，不會清空。
+- 行事曆：期貨結算日依交易所休市曆自動推算；FOMC、CPI、非農日期從官方網站自動抓。
+- 標記 "manual": true 的指標（例如台股融資、升息機率、AI 債務）沒有免費資料來源，不會被自動改寫，請手動編輯 indicators.json。
+"""
+import csv
+import io
+import json
+import math
+import sys
+import urllib.request
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
-  <section>
-    <h2>主要股市</h2>
-    <div class="eq-row eq-head"><span>指數</span><span>最新價格</span><span id="eq-chg-head" class="tog">漲跌% ⇄</span><span class="eq-sp"></span></div>
-    <div id="eq"></div>
-  </section>
+ROOT = Path(__file__).resolve().parent
+DATA = ROOT
+TW = timezone(timedelta(hours=8))
 
-  <section>
-    <div class="bar">
-      <h2>接下來要注意<span class="hint">台灣時間・點一下看說明</span></h2>
-      <select id="calfilter" aria-label="篩選行事曆">
-        <option value="key">只看重要</option>
-        <option value="">全部事件</option>
-        <option value="detail">詳細（全部＋說明）</option>
-        <option value="past">過去一週（含結果）</option>
-      </select>
-    </div>
-    <div id="cal"></div>
-  </section>
-
-  <section>
-    <div class="bar">
-      <h2>指標燈號<span class="hint">點一下看說明</span></h2>
-      <select id="filter" aria-label="篩選指標">
-        <option value="alert">只看紅燈與黃燈</option>
-        <option value="">全部指標</option>
-        <option>股市</option><option>恐慌與流動性</option><option>利率與央行</option><option>避險與商品</option><option>AI槓桿</option>
-      </select>
-    </div>
-    <div class="list" id="list"></div>
-  </section>
-
-  <section>
-    <h2>近期新聞</h2>
-    <ul class="news" id="news"></ul>
-  </section>
-
-  <details id="icon-set">
-    <summary>App 圖示設定</summary>
-    <div class="icons" role="radiogroup" aria-label="App 圖示">
-      <button type="button" data-icon="1" role="radio"><img src="icons/icon-1.png" alt="">燈號</button>
-      <button type="button" data-icon="2" role="radio"><img src="icons/icon-2.png" alt="">走勢</button>
-      <button type="button" data-icon="3" role="radio"><img src="icons/icon-3.png" alt="">儀表</button>
-    </div>
-    <p id="icon-tip" style="margin:4px 0 0"></p>
-  </details>
-
-  <details>
-    <summary>燈號怎麼判斷、資料從哪來</summary>
-    <p>整體風險依紅燈占全部指標的比例判斷：一半以上為「高風險」，四分之一以上為「偏高」，否則為「正常」。行情類指標由 Yahoo Finance 取得，高收益債利差與2年期美債來自 FRED，新聞來自 Google 新聞 RSS，由 GitHub Actions 定時自動更新，燈號門檻在 update_data.py。標示「手動」的指標需要自己編輯 indicators.json，超過 14 天沒更新會變淡。行事曆中紅色字為最重要事件（FOMC、美國CPI、非農、台指期與富台指結算、美股四巫日、日銀）；藍色字為美股、台股休市與提前收盤。期貨結算日依交易所休市曆推算，FOMC、CPI、非農日期自動從官方網站抓取，其他央行會議等事件可在 calendar.json 手動補充。這是市場數據與新聞整理，不構成投資建議。</p>
-  </details>
-</div>
-
-<script>
-{
-const SIG = { red: '紅燈', yellow: '黃燈', green: '綠燈' };
-const LEVEL = { '高風險': 'red', '偏高': 'yellow', '正常': 'green' };
-const KEY = ['vix', 'us10y', 'twii', 'fed_hike'];
-const $ = (id) => document.getElementById(id);
-const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
-const safeUrl = (u) => (typeof u === 'string' && /^https?:\/\//.test(u) ? u : null);
-const link = (url, text) => { const u = safeUrl(url); if (!u) return mk('span', '', text); const a = mk('a', '', text); a.href = u; a.target = '_blank'; a.rel = 'noopener'; return a; };
-const fmt = (v) => (v === null || v === undefined || v === '' || !isFinite(Number(v)) ? '—' : Number(v).toLocaleString('en-US', { maximumFractionDigits: 2 }));
-const chg = (r) => {
-  const c = r.change === null || r.change === undefined || r.change === '' ? null : Number(r.change);
-  const t = c === null ? '' : (c > 0 ? '+' : '') + (r.change_unit === '%' ? c.toFixed(2) : String(c)) + (r.change_unit || '');
-  return mk('span', 'chg ' + (c === null || c === 0 ? 'flat' : c < 0 ? 'down' : 'up'), t);
-};
-// 漲跌點數：由最新價與漲跌幅反推（前收 = 最新價 ÷ (1 + 漲跌幅)）
-const chgPoints = (r) => {
-  if (r.change_pt !== undefined && r.change_pt !== null && isFinite(Number(r.change_pt))) return Number(r.change_pt); // 程式直接算好的點數最準
-  const v = Number(r.value), c = Number(r.change);
-  if (r.change_unit !== '%' || r.change === null || r.change === undefined || r.change === '' || !isFinite(v) || !isFinite(c)) return null;
-  return v - v / (1 + c / 100);
-};
-const eqChg = (r) => {
-  if (!chgPt) return chg(r);
-  const p = chgPoints(r); if (p === null) return chg(r);
-  const t = (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p).toLocaleString('en-US', { minimumFractionDigits: Math.abs(p) < 100 ? 2 : 0, maximumFractionDigits: Math.abs(p) < 100 ? 2 : 0 });
-  return mk('span', 'chg ' + (Math.abs(p) < 1e-9 ? 'flat' : p < 0 ? 'down' : 'up'), t);
-};
-const fetchJSON = (p) => fetch(p + '?t=' + Date.now()).then((r) => { if (!r.ok) throw new Error(p); return r.json(); });
-const getJSON = (p) => fetchJSON(p);
-const daysUntil = (s) => {
-  const p = String(s).split('-').map(Number); if (p.length !== 3) return null;
-  const tw = new Date(Date.now() + 8 * 3600e3);
-  return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - Date.UTC(tw.getUTCFullYear(), tw.getUTCMonth(), tw.getUTCDate())) / 864e5);
-};
-const twNow = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 16).replace('T', ' ').replace('-', '/');
-const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
-
-let chgPt = false; try { chgPt = localStorage.getItem('chgMode') === 'pt'; } catch (e) {}
-let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '', calFilter = 'key';
-// 重要程度：calendar.json 可用 "importance": "critical"（最重要，紅色）/ "high"（重要）/ "normal"（一般）指定，否則依關鍵字判斷
-const CRIT_EVENT = /FOMC|非農|台指期|富台指|美股四巫|日銀/;
-const HOLIDAY_EVENT = /休市|提前收盤/;
-const KEY_EVENT = /PCE|四巫|大結算|SQ/;
-const eventLevel = (r) => {
-  if (r.importance) return r.importance;
-  const e = r.event || '';
-  if (HOLIDAY_EVENT.test(e)) return 'holiday';
-  if (CRIT_EVENT.test(e) || (/CPI/.test(e) && r.region === '美國')) return 'critical';
-  if (KEY_EVENT.test(e)) return 'high';
-  return 'normal';
-};
-const isKeyEvent = (r) => eventLevel(r) !== 'normal';
-const md = (d) => String(d || '').slice(5).replace('-', '/');
-// 資料日期：多數指標的日期（同票取較新）
-function refDate() {
-  const n = {}; IND.forEach((r) => { if (r.as_of) n[r.as_of] = (n[r.as_of] || 0) + 1; });
-  return Object.keys(n).sort((a, b) => n[b] - n[a] || b.localeCompare(a))[0] || '';
-}
-const daysBetween = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 864e5);
-// 超過 14 天沒更新的指標視為過舊
-const isStale = (r) => r.as_of && REF && daysBetween(REF, r.as_of) > 14;
-const nameWithDate = (cls, r) => { const e = mk('span', cls, r.name); if (r.as_of && REF && r.as_of !== REF) e.append(mk('span', 'old', '(' + md(r.as_of) + ')')); return e; };
-
-function drawSummary() {
-  const n = (s) => IND.filter((r) => r.signal === s).length;
-  ['red', 'yellow', 'green'].forEach((s) => { $('n-' + s).textContent = n(s); });
-  const share = IND.length ? n('red') / IND.length : 0;
-  const level = share >= 0.5 ? '高風險' : share >= 0.25 ? '偏高' : '正常';
-  $('level').textContent = IND.length ? level : '—';
-  $('level').className = 'level ' + (IND.length ? LEVEL[level] : '');
-  $('verdict').className = 'verdict ' + (IND.length ? LEVEL[level] : '');
-  const box = $('key'); box.replaceChildren();
-  KEY.map((id) => IND.find((r) => r.id === id)).filter(Boolean).forEach((r) => {
-    const k = mk('div', 'kpi');
-    const name = mk('span', 'kpi-name'); const dot = mk('span', 'dot ' + (r.signal || '')); dot.title = SIG[r.signal] || '';
-    name.append(mk('span', '', r.name), dot);
-    const v = mk('div'); v.append(mk('span', 'kpi-val', fmt(r.value))); if (r.unit) v.append(mk('span', 'unit', r.unit));
-    k.append(name, v, chg(r)); box.appendChild(k);
-  });
+# id -> (Yahoo 代碼, 名稱, 類別, 單位, 說明)
+YAHOO = {
+    "spx":    ("^GSPC",    "標普500",            "股市", "點", "美股大盤；距一年高點跌逾10%即屬「修正」"),
+    "ixic":   ("^IXIC",    "那斯達克",            "股市", "點", "科技股權重高，最能反映AI題材的資金進出"),
+    "sox":    ("^SOX",     "費城半導體",          "股市", "點", "AI晶片股是本輪賣壓核心，台股連動高"),
+    "twii":   ("^TWII",    "台股加權",            "股市", "點", "台股高度集中在電子與AI供應鏈"),
+    "otc":    ("^TWOII",   "櫃買指數",            "股市", "點", "中小型股與電子題材股為主，散戶比重高，反映市場投機與資金熱度"),
+    "n225":   ("^N225",    "日經225",             "股市", "點", "日本股市；也會受日圓與日銀升息影響"),
+    "kospi":  ("^KS11",    "韓股KOSPI",           "股市", "點", "記憶體與半導體權重高"),
+    "vix":    ("^VIX",     "VIX恐慌指數",         "恐慌與流動性", "", "30以上屬高度恐慌，代表避險需求急升"),
+    "us10y":  ("^TNX",     "美國10年期公債殖利率", "利率與央行", "%", "全球借貸成本基準；5%是市場關注的穩定門檻"),
+    "dxy":    ("DX-Y.NYB", "美元指數",            "利率與央行", "", "美元走強會把資金從新興市場抽走"),
+    "usdjpy": ("JPY=X",    "美元兌日圓",          "利率與央行", "", "逼近160時日本可能干預；日圓急升會引發套利交易平倉"),
+    "gold":   ("GC=F",     "黃金期貨",            "避險與商品", "美元", "若和股市一起跌，代表投資人被迫賣資產換現金"),
+    "btc":    ("BTC-USD",  "比特幣",              "避險與商品", "美元", "高槓桿資產，常最先反映流動性收縮"),
+    "wti":    ("CL=F",     "WTI原油",             "避險與商品", "美元", "油價高會推升通膨、讓央行難以放鬆"),
 }
 
-function drawEq() {
-  const box = $('eq'); box.replaceChildren();
-  $('eq-chg-head').textContent = chgPt ? '漲跌點 ⇄' : '漲跌% ⇄';
-  const rows = IND.filter((r) => r.group === '股市').sort((a, b) => Number(a.change ?? 0) - Number(b.change ?? 0));
-  if (!rows.length) return box.appendChild(mk('p', 'empty', '沒有股市資料'));
-  const maxAbs = Math.max(1, ...rows.map((r) => Math.abs(Number(r.change) || 0)));
-  rows.forEach((r) => {
-    const c = Number(r.change) || 0;
-    const row = mk('div', 'eq-row' + (isStale(r) ? ' stale' : ''));
-    const track = mk('span', 'track'); track.setAttribute('aria-hidden', 'true');
-    const f = mk('span', 'fill ' + (c < 0 ? 'down' : 'up')); f.style.width = (Math.abs(c) / maxAbs * 100) + '%'; track.append(f);
-    const c2 = eqChg(r); c2.classList.add('tog'); c2.title = '點一下切換漲跌幅／漲跌點';
-    row.append(nameWithDate('eq-name', r), mk('span', 'eq-price', fmt(r.value)), c2, track);
-    box.appendChild(row);
-  });
+# id -> (FRED 序列, 名稱, 類別, 單位, 說明)
+FRED = {
+    "hy_oas": ("BAMLH0A0HYM2", "美國高收益債利差", "恐慌與流動性", "%", "利差擴大代表企業借錢變貴、信用市場緊縮"),
+    "us2y":   ("DGS2",         "美國2年期公債殖利率", "利率與央行", "%", "反映市場對聯準會升降息的預期"),
 }
 
-function drawList() {
-  const box = $('list'); box.replaceChildren();
-  const order = { red: 0, yellow: 1, green: 2 };
-  const rows = IND.filter((r) => (filter === 'alert' ? r.signal === 'red' || r.signal === 'yellow' : !filter || r.group === filter))
-    .sort((a, b) => (order[a.signal] ?? 3) - (order[b.signal] ?? 3));
-  rows.forEach((r) => {
-    const it = mk('div', 'item' + (isStale(r) ? ' stale' : ''));
-    if (isStale(r)) it.title = '資料較舊（' + r.as_of + '），請手動更新 indicators.json';
-    const dot = mk('span', 'dot ' + (r.signal || '')); dot.title = SIG[r.signal] || '';
-    const v = mk('span', 'item-val', fmt(r.value));
-    const note = mk('div', 'note', r.note || '');
-    const src = mk('span', 'src');
-    src.append(document.createTextNode(r.manual ? '· 手動 · ' : '· '), link(r.source_url, r.source_name || '來源'));
-    note.append(src);
-    it.addEventListener('click', (e) => { if (e.target.tagName !== 'A') it.classList.toggle('open'); });
-    it.append(dot, nameWithDate('item-name', r), v, mk('span', 'item-unit', r.unit || ''), chg(r), note);
-    box.appendChild(it);
-  });
-  if (!rows.length) box.appendChild(mk('p', 'empty', filter === 'alert' ? '目前沒有紅燈或黃燈指標' : '這個類別目前沒有指標'));
+NEWS_QUERIES = [
+    "全球股市 流動性",
+    "聯準會 升息",
+    "美債殖利率",
+    "AI 股 拋售",
+    "台股 外資 賣超",
+]
+
+
+def worst(*signals):
+    order = {"red": 0, "yellow": 1, "green": 2}
+    return min(signals, key=lambda s: order.get(s, 3))
+
+
+def signal_for(i, value, change, drawdown):
+    """燈號規則：red=壓力明顯、yellow=注意、green=正常。可依自己的判斷修改門檻。"""
+    s = "green"
+    if YAHOO.get(i, (None, None, ""))[2] == "股市":
+        if change is not None:
+            s = worst(s, "red" if change <= -3 else "yellow" if change <= -1.5 else "green")
+        if drawdown is not None:
+            s = worst(s, "red" if drawdown <= -10 else "yellow" if drawdown <= -5 else "green")
+    elif i == "vix":
+        s = "red" if value >= 30 else "yellow" if value >= 20 else "green"
+    elif i == "us10y":
+        s = "red" if value >= 5.0 else "yellow" if value >= 4.6 else "green"
+    elif i == "us2y":
+        s = "yellow" if value >= 4.5 else "green"
+    elif i == "dxy":
+        s = "red" if value >= 106 else "yellow" if value >= 103 else "green"
+    elif i == "usdjpy":
+        s = "red" if value >= 160 else "yellow" if value >= 155 else "green"
+    elif i == "wti":
+        s = "red" if value >= 100 else "yellow" if value >= 90 else "green"
+    elif i == "gold":
+        s = "yellow" if (change is not None and change <= -2) else "green"
+    elif i == "btc":
+        if change is not None:
+            s = "red" if change <= -5 else "yellow" if change <= -3 else "green"
+        if drawdown is not None:
+            s = worst(s, "red" if drawdown <= -30 else "yellow" if drawdown <= -20 else "green")
+    elif i == "hy_oas":
+        s = "red" if value >= 5 else "yellow" if value >= 4 else "green"
+    return s
+
+
+def fetch_yahoo(rows_by_id):
+    try:
+        import yfinance as yf
+    except ImportError:
+        print("yfinance 未安裝，略過行情更新", file=sys.stderr)
+        return
+    for i, (ticker, name, group, unit, note) in YAHOO.items():
+        try:
+            tk = yf.Ticker(ticker)
+            hist = tk.history(period="1y", auto_adjust=False)
+            hist = hist.dropna(subset=["Close"])
+            if len(hist) < 2:
+                raise ValueError("資料不足")
+            close = float(hist["Close"].iloc[-1])
+            prev = float(hist["Close"].iloc[-2])
+            as_of = hist.index[-1].strftime("%Y-%m-%d")
+            # Yahoo 的日線常常晚一天才補上亞洲市場當天那一根，用小時線補
+            try:
+                intraday = tk.history(period="5d", interval="60m", auto_adjust=False).dropna(subset=["Close"])
+                if len(intraday):
+                    last_day = intraday.index[-1].strftime("%Y-%m-%d")
+                    if last_day > as_of:
+                        prev = close
+                        close = float(intraday["Close"].iloc[-1])
+                        as_of = last_day
+            except Exception as e:
+                print(f"{i} 小時線讀取失敗，使用日線：{e}", file=sys.stderr)
+            high = max(float(hist["Close"].max()), close)
+            if i == "us10y":
+                if close > 20:  # 舊格式 ×10
+                    close, prev = close / 10, prev / 10
+                change, change_unit = round((close - prev) * 100), "bp"
+            else:
+                change, change_unit = round((close / prev - 1) * 100, 2), "%"
+            drawdown = (close / high - 1) * 100 if high else None
+            value = round(close, 2)
+            extra = ""
+            if drawdown is not None and drawdown <= -5 and group in ("股市", "避險與商品"):
+                extra = f"；距一年高點 {drawdown:.1f}%"
+            rows_by_id[i] = {
+                "id": i, "group": group, "name": name, "value": value, "unit": unit,
+                "change": change, "change_unit": change_unit, "change_pt": round(close - prev, 2), "as_of": as_of,
+                "signal": signal_for(i, value, change if change_unit == "%" else None, drawdown),
+                "note": note + extra,
+                "source_name": "Yahoo Finance",
+                "source_url": f"https://finance.yahoo.com/quote/{urllib.request.quote(ticker)}",
+            }
+        except Exception as e:  # 保留舊值
+            print(f"{i} ({ticker}) 更新失敗，保留舊值：{e}", file=sys.stderr)
+
+    # 黃金與股市同跌 → 流動性壓力紅燈
+    eq_red = sum(1 for k in ("spx", "ixic", "twii") if rows_by_id.get(k, {}).get("signal") == "red")
+    g = rows_by_id.get("gold")
+    if g and g.get("change") is not None and g["change"] <= -2 and eq_red >= 2:
+        g["signal"] = "red"
+
+
+def fetch_fred(rows_by_id):
+    for i, (series, name, group, unit, note) in FRED.items():
+        try:
+            url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}"
+            with urllib.request.urlopen(url, timeout=30) as r:
+                text = r.read().decode("utf-8")
+            pts = [(d, v) for d, v in csv.reader(io.StringIO(text)) if v not in ("", ".") and d[:1].isdigit()]
+            d1, v1 = pts[-1]
+            d0, v0 = pts[-2]
+            value, prev = float(v1), float(v0)
+            rows_by_id[i] = {
+                "id": i, "group": group, "name": name, "value": round(value, 2), "unit": unit,
+                "change": round((value - prev) * 100), "change_unit": "bp", "as_of": d1,
+                "signal": signal_for(i, value, None, None), "note": note,
+                "source_name": "FRED", "source_url": f"https://fred.stlouisfed.org/series/{series}",
+            }
+        except Exception as e:
+            print(f"{i} ({series}) 更新失敗，保留舊值：{e}", file=sys.stderr)
+
+
+def fetch_news(old_rows):
+    try:
+        import feedparser
+    except ImportError:
+        print("feedparser 未安裝，略過新聞更新", file=sys.stderr)
+        return old_rows
+    seen, out = set(), []
+    cutoff = datetime.now(TW) - timedelta(days=7)
+    for q in NEWS_QUERIES:
+        url = ("https://news.google.com/rss/search?q=" + urllib.request.quote(q + " when:7d")
+               + "&hl=zh-TW&gl=TW&ceid=TW:zh-Hant")
+        try:
+            feed = feedparser.parse(url)
+        except Exception as e:
+            print(f"新聞 {q} 失敗：{e}", file=sys.stderr)
+            continue
+        for e in feed.entries[:4]:
+            title = e.get("title", "").strip()
+            link = e.get("link", "")
+            if not title or not link.startswith("http") or title in seen:
+                continue
+            try:
+                dt = datetime(*e.published_parsed[:6], tzinfo=timezone.utc).astimezone(TW)
+            except Exception:
+                dt = datetime.now(TW)
+            if dt < cutoff:
+                continue
+            src = e.get("source", {}).get("title", "") if isinstance(e.get("source"), dict) else ""
+            if src and title.endswith(" - " + src):
+                title = title[: -len(" - " + src)]
+            seen.add(title)
+            out.append({"id": f"n{len(out)+1}", "date": dt.strftime("%Y-%m-%d"), "topic": q.split()[0],
+                        "title": title, "source_name": src or "Google 新聞", "source_url": link})
+    out.sort(key=lambda r: r["date"], reverse=True)
+    return out[:12] if out else old_rows
+
+
+# ---------- 行事曆：期貨結算日（交易所休市曆）與經濟數據日期（官方網站） ----------
+from datetime import date
+
+UA = {"User-Agent": "Mozilla/5.0 (market-risk-monitor; GitHub Actions)"}
+
+
+def _get(url, timeout=30):
+    req = urllib.request.Request(url, headers=UA)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def _cal(code):
+    """交易所休市曆；套件不可用時回傳 None，改用「週一到週五」近似。"""
+    try:
+        import exchange_calendars as xc
+        today = datetime.now(TW).date()
+        return xc.get_calendar(code, start=str(today - timedelta(days=40)), end=str(today + timedelta(days=400)))
+    except Exception as e:
+        print(f"{code} 休市曆無法使用，改用平日近似：{e}", file=sys.stderr)
+        return None
+
+
+def _is_session(cal, d):
+    if cal is None:
+        return d.weekday() < 5
+    try:
+        return bool(cal.is_session(d.isoformat()))
+    except Exception:
+        return d.weekday() < 5
+
+
+def _shift(cal, d, forward=True):
+    """遇休市：forward=True 順延到下一個交易日，False 提前到前一個交易日。"""
+    step = timedelta(days=1 if forward else -1)
+    for _ in range(15):
+        if _is_session(cal, d):
+            return d
+        d += step
+    return d
+
+
+def _nth_weekday(y, m, weekday, n):
+    d = date(y, m, 1)
+    d = d + timedelta(days=(weekday - d.weekday()) % 7)
+    return d + timedelta(weeks=n - 1)
+
+
+def _nth_last_session(cal, y, m, n):
+    d = date(y + (m == 12), m % 12 + 1, 1) - timedelta(days=1)
+    found = 0
+    for _ in range(40):
+        if _is_session(cal, d):
+            found += 1
+            if found == n:
+                return d
+        d -= timedelta(days=1)
+    return d
+
+
+def settlement_events(days_ahead=45):
+    """依各交易所規則推算結算日，遇休市依規則順延或提前。"""
+    today = datetime.now(TW).date()
+    end = today + timedelta(days=days_ahead)
+    tw, kr, jp, us = _cal("XTAI"), _cal("XKRX"), _cal("XTKS"), _cal("XNYS")
+    out = []
+    y, m = today.year, today.month
+    for _ in range(3):
+        ym = f"{m}月"
+        quarter = m in (3, 6, 9, 12)
+        # 台指期：第三個週三，遇休市順延
+        d = _shift(tw, _nth_weekday(y, m, 2, 3), True)
+        out.append({"id": f"auto_txf_{y}{m:02d}", "date": d.isoformat(), "tw_time": "13:30", "region": "台灣",
+                    "event": f"台指期{ym}合約結算",
+                    "why": "結算價取13:00–13:30平均，結算前多空攻防常使尾盤波動放大",
+                    "source_url": "https://www.taifex.com.tw/cht/5/fSPCalendar"})
+        # 富台指：當月倒數第二個台灣交易日
+        d = _nth_last_session(tw, y, m, 2)
+        out.append({"id": f"auto_sgx_{y}{m:02d}", "date": d.isoformat(), "tw_time": "13:30", "region": "台灣",
+                    "event": f"富台指（SGX）{ym}合約結算",
+                    "why": "結算價取台股收盤前25分鐘平均，外資期現貨部位調整可能放大尾盤波動",
+                    "source_url": "https://www.sgx.com/derivatives/products/ftse-taiwan-index-futures"})
+        # 日經225 SQ：第二個週五，遇休市提前
+        d = _shift(jp, _nth_weekday(y, m, 4, 2), False)
+        out.append({"id": f"auto_sq_{y}{m:02d}", "date": d.isoformat(), "tw_time": "08:00（開盤）", "region": "日本",
+                    "event": "日經225 " + ("季度大結算（SQ）" if quarter else "月結算（SQ）"),
+                    "why": "以開盤價結算，開盤前後常出現大額買賣單",
+                    "source_url": "https://www.jpx.co.jp/english/derivatives/rules/last-trading-day/"})
+        if quarter:
+            # 美股四巫日：第三個週五，遇休市提前
+            d = _shift(us, _nth_weekday(y, m, 4, 3), False)
+            out.append({"id": f"auto_quad_{y}{m:02d}", "date": d.isoformat(), "tw_time": "22:30起", "region": "美國",
+                        "event": "美股四巫日",
+                        "why": "股指期貨、選擇權、個股期權同步到期，台道瓊／台那斯達克同日結算；收盤前一小時（台北隔天凌晨）波動最大",
+                        "source_url": "https://www.cmegroup.com/trading/equity-index/"})
+            # 韓股四巫日：第二個週四，遇休市提前
+            d = _shift(kr, _nth_weekday(y, m, 3, 2), False)
+            out.append({"id": f"auto_krquad_{y}{m:02d}", "date": d.isoformat(), "tw_time": "14:20", "region": "韓國",
+                        "event": "韓股四巫日",
+                        "why": "指數期貨、選擇權與個股期貨同步到期，可能加劇外資進出與尾盤波動",
+                        "source_url": "https://global.krx.co.kr/"})
+        m += 1
+        if m == 13:
+            y, m = y + 1, 1
+    return [e for e in out if today.isoformat() <= e["date"] <= end.isoformat()]
+
+
+_MONTHS = {k: i + 1 for i, k in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"])}
+
+
+def _us_to_tw(d, hhmm):
+    """美東時間 → 台灣時間（自動處理夏令時間）。"""
+    from zoneinfo import ZoneInfo
+    h, mi = hhmm
+    t = datetime(d.year, d.month, d.day, h, mi, tzinfo=ZoneInfo("America/New_York")).astimezone(TW)
+    return t.date(), t.strftime("%H:%M")
+
+
+def parse_fomc(html):
+    """解析 Fed 官網 FOMC 行程，回傳 [(會議最後一天 date, 文字)]。"""
+    import re
+    out = []
+    parts = re.split(r"(\d{4}) FOMC Meetings", html)
+    for i in range(1, len(parts) - 1, 2):
+        year = int(parts[i])
+        body = parts[i + 1]
+        for mon, days in re.findall(r'fomc-meeting__month[^>]*>\s*<strong>([A-Za-z/]+)</strong>.*?fomc-meeting__date[^>]*>\s*([\d\-]+)', body, re.S):
+            last_mon = mon.split("/")[-1][:3].lower()
+            if last_mon not in _MONTHS:
+                continue
+            last_day = int(days.split("-")[-1])
+            try:
+                out.append((date(year, _MONTHS[last_mon], last_day), f"{mon} {days}"))
+            except ValueError:
+                pass
+    return out
+
+
+def parse_bls(html):
+    """解析 BLS 公布行程表，回傳 [(參考月份文字, 公布日 date, (時, 分))]。"""
+    import re
+    out = []
+    for ref, rel, tm in re.findall(r"<td>\s*([A-Z][a-z]{2,4}\.?\s+\d{4})\s*</td>\s*<td>\s*([A-Z][a-z]{2,4}\.?\s+\d{1,2},\s+\d{4})\s*</td>\s*<td>\s*(\d{1,2}:\d{2}\s*[AP]M)\s*</td>", html):
+        mon, day, year = re.match(r"([A-Za-z]+)\.?\s+(\d{1,2}),\s+(\d{4})", rel).groups()
+        h, mi = map(int, re.match(r"(\d{1,2}):(\d{2})", tm).groups())
+        if "PM" in tm and h != 12:
+            h += 12
+        try:
+            out.append((ref, date(int(year), _MONTHS[mon[:3].lower()], int(day)), (h, mi)))
+        except (KeyError, ValueError):
+            pass
+    return out
+
+
+def _ref_month_zh(ref):
+    import re
+    m = re.match(r"([A-Za-z]+)", ref)
+    return f"{_MONTHS.get(m.group(1)[:3].lower(), '')}月" if m else ""
+
+
+def econ_events(days_ahead=45):
+    """從官方網站抓 FOMC、CPI、非農的日期；抓不到就略過（保留手動資料）。"""
+    today = datetime.now(TW).date()
+    end = today + timedelta(days=days_ahead)
+    out = []
+    try:
+        for d, label in parse_fomc(_get("https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm")):
+            twd, twt = _us_to_tw(d, (14, 0))
+            out.append({"id": f"auto_fomc_{d.isoformat()}", "date": twd.isoformat(), "tw_time": twt, "region": "美國",
+                        "event": f"FOMC利率決議（美東{d.month}/{d.day}）",
+                        "why": "聯準會利率決策，左右全球資金成本與股債走勢",
+                        "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"})
+    except Exception as e:
+        print(f"FOMC 行程抓取失敗：{e}", file=sys.stderr)
+    for url, name, why in [
+        ("https://www.bls.gov/schedule/news_release/cpi.htm", "CPI", "通膨是否降溫，決定後續利率方向"),
+        ("https://www.bls.gov/schedule/news_release/empsit.htm", "非農就業報告", "就業太強→升息壓力；太弱→衰退疑慮"),
+    ]:
+        try:
+            for ref, d, hm in parse_bls(_get(url)):
+                twd, twt = _us_to_tw(d, hm)
+                out.append({"id": f"auto_{'cpi' if name == 'CPI' else 'nfp'}_{d.isoformat()}", "date": twd.isoformat(),
+                            "tw_time": twt, "region": "美國", "event": f"{_ref_month_zh(ref)}{name}",
+                            "why": why, "source_url": url})
+        except Exception as e:
+            print(f"{name} 行程抓取失敗：{e}", file=sys.stderr)
+    return [e for e in out if today.isoformat() <= e["date"] <= end.isoformat()]
+
+
+HOLIDAY_ZH = {
+    "Thanksgiving": "感恩節", "Christmas": "聖誕節", "New Year's Day": "元旦", "Dr. Martin Luther King Jr. Day": "金恩紀念日",
+    "President's Day": "總統日", "Presidents' Day": "總統日", "Good Friday": "耶穌受難日", "Memorial Day": "陣亡將士紀念日",
+    "Juneteenth": "六月節", "Independence Day": "獨立紀念日", "Labor Day": "勞動節", "Labour Day": "勞動節",
+    "Constitution Day": "行憲紀念日", "Peace Memorial Day": "和平紀念日", "Children's Day": "兒童節",
+    "Tomb Sweeping Day": "清明節", "Dragon Boat Festival": "端午節", "Mid-Autumn Festival": "中秋節", "National Day": "國慶日",
 }
 
-function drawCal() {
-  const box = $('cal'); box.replaceChildren();
-  const upcoming = CAL.slice().sort((a, b) => String(a.date + a.tw_time).localeCompare(String(b.date + b.tw_time)))
-    .filter((r) => { const n = daysUntil(r.date); return n === null || n >= 0; });
-  const past = calFilter === 'past';
-  const detail = calFilter === 'detail' || past;
-  const all = past
-    ? CAL.filter((r) => { const n = daysUntil(r.date); return n !== null && n < 0 && n >= -7; })
-        .sort((a, b) => String(b.date + b.tw_time).localeCompare(String(a.date + a.tw_time)))
-    : calFilter === 'key' ? upcoming.filter(isKeyEvent) : upcoming;
-  if (!all.length) return box.appendChild(mk('p', 'empty', past ? '過去一週沒有事件紀錄' : calFilter === 'key' ? '近期沒有重要事件' : '近期沒有排定的事件'));
-  const WD = '日一二三四五六';
-  const table = mk('table', 'cal'); const tb = mk('tbody'); table.append(tb);
-  (allCal || detail ? all : all.slice(0, 5)).forEach((r) => {
-    const n = daysUntil(r.date);
-    const p = String(r.date).split('-').map(Number);
-    const wd = p.length === 3 ? '(' + WD[new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay()] + ')' : '';
-    const key = isKeyEvent(r);
-    const tr = mk('tr', (key ? 'keyev' : '') + (detail ? ' open' : ''));
-    const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
-    const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n > 0 && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n < 0 ? (-n) + '天前' : n + '天');
-    const body = mk('td'); const ev = mk('div', 'event' + (eventLevel(r) === 'critical' ? ' crit' : eventLevel(r) === 'holiday' ? ' hol' : ''));
-    if (key && calFilter !== 'key') { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
-    if (r.region) ev.append(mk('span', 'tag', r.region));
-    ev.append(link(r.source_url, r.event || ''));
-    body.append(ev);
-    if (r.result) { const res = mk('div', 'result'); res.append(mk('span', 'lab', '結果 '), mk('b', '', r.result)); body.append(res); }
-    if (r.prev || r.forecast) {
-      const nums = mk('div', 'nums');
-      if (r.prev) nums.append(mk('span', 'lab', '前值 '), mk('span', '', r.prev));
-      if (r.prev && r.forecast) nums.append(mk('span', 'lab', '　｜　'));
-      if (r.forecast) nums.append(mk('span', 'lab', '預估 '), mk('span', 'fc', r.forecast));
-      body.append(nums);
-    }
-    const why = mk('div', 'why', r.why || '');
-    if (r.guide) { const g = mk('div', 'guide'); g.append(mk('b', '', '怎麼看：'), document.createTextNode(r.guide)); why.append(g); }
-    body.append(why);
-    tr.addEventListener('click', (e) => { if (e.target.tagName !== 'A') tr.classList.toggle('open'); });
-    tr.append(t, cd, body); tb.appendChild(tr);
-  });
-  box.appendChild(table);
-  const hidden = upcoming.length - all.length;
-  const row = mk('div'); row.style.display = 'flex'; row.style.gap = '16px';
-  if (all.length > 5 && !detail) {
-    const b = mk('button', 'more', allCal ? '收起' : `顯示全部 ${all.length} 項`); b.type = 'button';
-    b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); row.append(b);
-  }
-  if (calFilter === 'key' && hidden > 0 && !past) {
-    const b = mk('button', 'more', `另有 ${hidden} 項一般事件`); b.type = 'button';
-    b.addEventListener('click', () => { calFilter = ''; $('calfilter').value = ''; drawCal(); }); row.append(b);
-  }
-  if (row.childNodes.length) box.appendChild(row);
-}
 
-function drawNews() {
-  const ul = $('news'); ul.replaceChildren();
-  const all = NEWS.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
-  (allNews ? all : all.slice(0, 5)).forEach((r) => {
-    const li = mk('li');
-    li.append(mk('span', 'date', String(r.date || '').slice(5).replace('-', '/')));
-    if (r.topic) li.append(mk('span', 'tag', r.topic));
-    li.append(link(r.source_url, r.title || ''));
-    if (r.source_name) li.append(mk('span', 'date', '　' + r.source_name));
-    ul.appendChild(li);
-  });
-  if (all.length > 5) {
-    const li = mk('li'); li.style.borderBottom = '0';
-    const b = mk('button', 'more', allNews ? '收起' : `顯示全部 ${all.length} 則`); b.type = 'button';
-    b.addEventListener('click', () => { allNews = !allNews; drawNews(); }); li.append(b); ul.appendChild(li);
-  }
-}
+def holiday_events(days_ahead=45):
+    """依交易所休市曆列出美股、台股休市日與美股提前收盤日。"""
+    today = datetime.now(TW).date()
+    end = today + timedelta(days=days_ahead)
+    out = []
+    for code, region, label, why in [
+        ("XNYS", "美國", "美股", "美股休市，台股與台指期夜盤少了美股方向，流動性較低、隔天容易反映兩天消息"),
+        ("XTAI", "台灣", "台股", "台股與台指期休市，留意休市期間國際市場變化，復市開盤可能跳空"),
+    ]:
+        cal = _cal(code)
+        if cal is None:
+            continue
+        names = {}
+        try:
+            h = cal.regular_holidays.holidays(start=str(today), end=str(end), return_name=True)
+            names = {d.date(): n for d, n in h.items()}
+        except Exception:
+            pass
+        d = today
+        while d <= end:
+            if d.weekday() < 5 and not _is_session(cal, d):
+                zh = HOLIDAY_ZH.get(names.get(d, ""), "")
+                out.append({"id": f"auto_hol_{code}_{d.isoformat()}", "date": d.isoformat(), "tw_time": "全日", "region": region,
+                            "event": f"{label}休市" + (f"（{zh}）" if zh else ""), "why": why,
+                            "source_url": "https://www.nyse.com/markets/hours-calendars" if code == "XNYS" else "https://www.twse.com.tw/zh/trading/holiday.html"})
+            d += timedelta(days=1)
+        if code == "XNYS":
+            try:
+                ec = cal.early_closes
+                for ts in ec[(ec >= str(today)) & (ec <= str(end))]:
+                    d = ts.date()
+                    twd, twt = _us_to_tw(d, (13, 0))
+                    out.append({"id": f"auto_early_{d.isoformat()}", "date": d.isoformat(), "tw_time": "提前收盤", "region": "美國",
+                                "event": "美股提前收盤", "why": f"美東13:00收盤（台北{twd.month}/{twd.day} {twt}），交易量少、價格容易大幅波動",
+                                "source_url": "https://www.nyse.com/markets/hours-calendars"})
+            except Exception as e:
+                print(f"提前收盤日讀取失敗：{e}", file=sys.stderr)
+    return out
 
-function loadAll() {
-  const btn = $('reload'), status = $('status'), before = $('updated').textContent;
-  btn.disabled = true; btn.textContent = '載入中…'; status.textContent = '';
-  return Promise.allSettled([
-    getJSON('indicators.json').then((d) => { IND = d.rows || []; REF = refDate(); $('asof').textContent = md(REF) || '—'; drawSummary(); drawEq(); drawList(); })
-      .catch((e) => { fail('eq', '股市資料載入失敗'); fail('list', '指標資料載入失敗'); throw e; }),
-    getJSON('calendar.json').then((d) => { CAL = d.rows || []; drawCal(); }).catch((e) => { fail('cal', '行事曆載入失敗'); throw e; }),
-    getJSON('headlines.json').then((d) => { NEWS = d.rows || []; drawNews(); }).catch((e) => { $('news').replaceChildren(mk('li', 'empty', '新聞載入失敗')); throw e; }),
-    getJSON('meta.json').then((d) => { $('updated').textContent = d.updated_at ? String(d.updated_at).slice(5).replace('-', '/') : '—'; }),
-  ]).then((res) => {
-    $('loaded').textContent = twNow();
-    const after = $('updated').textContent;
-    if (res.some((r) => r.status === 'rejected')) status.textContent = '· 部分資料載入失敗';
-    else if (before !== '—' && before === after) status.textContent = '· 已是最新';
-    else if (before !== '—') status.textContent = '· 已載入新數據';
-  }).finally(() => { btn.disabled = false; btn.textContent = '重新載入'; });
-}
 
-// 在 GitHub Pages 上時，顯示「立即抓新數據」按鈕，連到 Actions 手動執行頁
-(() => {
-  const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
-  if (!m) return;
-  const repo = location.pathname.split('/').filter(Boolean)[0] || (m[1] + '.github.io');
-  const a = $('run-update');
-  a.href = `https://github.com/${m[1]}/${repo}/actions/workflows/update.yml`;
-  a.title = '開啟 GitHub Actions，按「Run workflow」立即抓一次新數據，1–2 分鐘後再按「重新載入」';
-  a.hidden = false;
-})();
+# ---------- 數據事件的「怎麼看」與前值 ----------
+GUIDES = [
+    ("東京CPI", "日本通膨領先指標；高於預估＝日銀12月升息機率提高，日圓走強"),
+    ("會議紀錄", "內容偏鷹（多數委員支持續升息）＝股市承壓；偏鴿（討論暫停升息）＝利多"),
+    ("非農", "新增就業高於預估且超過+10萬＝偏強，升息壓力加大；0～+5萬＝持平（目前就業損益平衡約+0.5萬人）；負值或失業率升破4.3%＝偏弱，衰退疑慮升高"),
+    ("CPI", "看核心CPI月增：0.2%以下＝降溫（利多股市）；0.3%＝偏熱；0.4%以上＝過熱，升息壓力加大。公布值高於預估通常不利股市"),
+    ("PCE", "Fed最看重的通膨指標，目標2%。核心PCE月增0.2%以下＝降溫；0.3%以上＝偏熱，支持續升息"),
+    ("PPI", "生產端物價，月增0.2%以下＝溫和；0.4%以上＝成本壓力升溫，之後可能轉嫁到CPI"),
+    ("JOLTS", "職缺比前值減少＝勞動市場降溫（有助通膨回落）；明顯增加＝勞動市場仍緊，升息壓力"),
+    ("ISM", "50以上＝擴張、50以下＝收縮；物價分項高於60代表通膨壓力仍大"),
+    ("零售", "月增高於0.5%＝消費強勁，升息壓力；0以下＝消費轉弱，景氣放緩"),
+    ("FOMC", "照預期升1碼＝影響有限；升2碼或暗示明年多次升息＝偏鷹，股市承壓；不升息或語氣轉鴿＝利多股市"),
+    ("日銀", "升息＝日圓走強，可能引發日圓套利交易平倉、全球股市賣壓；按兵不動＝日圓偏弱、壓力暫緩"),
+    ("歐洲央行", "升息或偏鷹＝全球利率維持高檔；降息或轉鴿＝美元相對走強"),
+    ("英國央行", "升息或偏鷹＝全球利率維持高檔；降息或轉鴿＝英鎊走弱"),
 
-$('reload').addEventListener('click', loadAll);
-// 點「漲跌」欄（或欄名）切換 漲跌% ／ 漲跌點，記住選擇
-document.querySelector('.eq-head').parentNode.addEventListener('click', (e) => {
-  if (!e.target.closest('.tog')) return;
-  chgPt = !chgPt; try { localStorage.setItem('chgMode', chgPt ? 'pt' : 'pct'); } catch (err) {}
-  drawEq();
-});
+]
 
-// App 圖示：選擇後記在這台手機的瀏覽器裡；iPhone 主畫面圖示是在「加入主畫面」那一刻決定的，所以換圖示要在 Safari 選好再重新加入
-(() => {
-  const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-  let cur = '3';
-  try { cur = localStorage.getItem('appIcon') || '3'; } catch (e) {}
-  const apply = (n) => {
-    const src = 'icons/icon-' + n + '.png';
-    $('touch-icon').href = src; $('fav-icon').href = src;
-    document.querySelectorAll('#icon-set [data-icon]').forEach((b) => { const on = b.dataset.icon === n; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
-  };
-  const tip = (changed) => {
-    $('icon-tip').textContent = standalone
-      ? '主畫面上的圖示無法在 App 裡直接換：請用 Safari 打開這個網頁，在這裡選好圖示，再「分享 → 加入主畫面」，並刪掉舊的圖示。'
-      : (changed ? '已選好。現在按 Safari 的「分享 → 加入主畫面」，就會用這個圖示（舊的圖示請先刪掉）。' : '選好圖示後，按 Safari 的「分享 → 加入主畫面」。');
-  };
-  apply(cur); tip(false);
-  document.querySelectorAll('#icon-set [data-icon]').forEach((b) => b.addEventListener('click', () => {
-    cur = b.dataset.icon; try { localStorage.setItem('appIcon', cur); } catch (e) {}
-    apply(cur); tip(true);
-  }));
-})();
+def guide_for(event):
+    for key, text in GUIDES:
+        if key in event:
+            return text
+    return ""
 
-// 加到 iPhone 主畫面當 App 用時，Safari 沒有下拉重新整理，這裡自己做：在頁面最上方往下拉、放開就更新
-(() => {
-  const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-  if (!standalone) return; // 一般瀏覽器本來就能下拉重新整理
-  document.documentElement.classList.add('standalone');
-  const bar = $('ptr'), txt = bar.firstChild, MAX = 90, GO = 60;
-  let y0 = null, d = 0, busy = false;
-  const show = (h, t) => { bar.style.height = h + 'px'; txt.textContent = t; };
-  addEventListener('touchstart', (e) => { if (!busy && scrollY <= 0 && e.touches.length === 1) { y0 = e.touches[0].clientY; d = 0; bar.classList.remove('go'); } }, { passive: true });
-  addEventListener('touchmove', (e) => {
-    if (y0 === null) return;
-    d = e.touches[0].clientY - y0;
-    if (d <= 0 || scrollY > 0) { y0 = null; show(0, ''); return; }
-    const h = Math.min(MAX, d * 0.5);
-    show(h, h >= GO ? '放開更新' : '下拉更新');
-  }, { passive: true });
-  addEventListener('touchend', () => {
-    if (y0 === null) return;
-    y0 = null; bar.classList.add('go');
-    if (Math.min(MAX, d * 0.5) < GO) return show(0, '');
-    busy = true; show(GO - 10, '更新中…');
-    loadAll().finally(() => { show(GO - 10, $('status').textContent.replace(/^·\s*/, '') || '已更新'); setTimeout(() => { show(0, ''); busy = false; }, 700); });
-  });
-})();
-$('filter').addEventListener('change', (e) => { filter = e.target.value; drawList(); });
-$('calfilter').addEventListener('change', (e) => { calFilter = e.target.value; allCal = false; drawCal(); });
-loadAll();
-}
-</script>
-</body>
-</html>
+
+def _fred_series(series):
+    text = _get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}")
+    return [(d, float(v)) for d, v in csv.reader(io.StringIO(text)) if d[:1].isdigit() and v not in ("", ".")]
+
+
+def latest_prev_values():
+    """從 FRED 算出最新一期的 CPI 月增、核心 CPI 月增、非農新增與失業率，當作「前值」。"""
+    out = {}
+    try:
+        cpi, core = _fred_series("CPIAUCSL"), _fred_series("CPILFESL")
+        m = int(cpi[-1][0][5:7])
+        out["CPI"] = f"{m}月月增{(cpi[-1][1] / cpi[-2][1] - 1) * 100:.1f}%、核心{(core[-1][1] / core[-2][1] - 1) * 100:.1f}%"
+    except Exception as e:
+        print(f"CPI 前值計算失敗：{e}", file=sys.stderr)
+    try:
+        pay, ur = _fred_series("PAYEMS"), _fred_series("UNRATE")
+        m = int(pay[-1][0][5:7])
+        chg = (pay[-1][1] - pay[-2][1]) / 10  # 千人 → 萬人
+        out["非農"] = f"{m}月{chg:+.1f}萬（失業率{ur[-1][1]:.1f}%）"
+    except Exception as e:
+        print(f"非農前值計算失敗：{e}", file=sys.stderr)
+    return out
+
+
+def enrich_events(rows):
+    """替還沒有「怎麼看」的數據事件補上判斷標準；CPI、非農補上前值。手動填的內容一律保留。"""
+    prev = None
+    for r in rows:
+        ev = str(r.get("event", ""))
+        if not r.get("guide"):
+            g = guide_for(ev)
+            if g:
+                r["guide"] = g
+        key = "CPI" if ("CPI" in ev and r.get("region") == "美國") else "非農" if "非農" in ev else None
+        if key and not r.get("prev"):
+            if prev is None:
+                prev = latest_prev_values()
+            if prev.get(key):
+                r["prev"] = prev[key]
+    return rows
+
+
+DUP_KEYS = ("結算", "四巫", "SQ", "FOMC", "CPI", "非農", "休市", "提前收盤")
+
+
+def update_calendar():
+    path = DATA / "calendar.json"
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8"))["rows"]
+    except Exception:
+        rows = []
+    today = datetime.now(TW).date()
+    # 保留過去一週的事件（含自動產生的結算日、休市日），供「過去一週」檢視；未來的自動事件每次重新產生
+    keep = [r for r in rows if str(r.get("date", "")) >= (today - timedelta(days=8)).isoformat()
+            and (not str(r.get("id", "")).startswith("auto_") or str(r.get("date", "")) < today.isoformat() or r.get("result"))]
+
+    def dup(e):
+        key = next((k for k in DUP_KEYS if k in e["event"]), None)
+        return any(r.get("date") == e["date"] and r.get("region") == e["region"]
+                   and key and key in str(r.get("event", "")) for r in keep)
+
+    auto = settlement_events() + econ_events() + holiday_events()
+    rows = keep + [e for e in auto if not dup(e)]
+    rows = enrich_events(rows)
+    rows.sort(key=lambda r: (r.get("date", ""), r.get("tw_time", "")))
+    path.write_text(json.dumps({"rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+# ---------- 原本手動的指標：能自動的改成自動 ----------
+def fetch_cpi(rows_by_id):
+    """美國 CPI 年增率：FRED CPIAUCSL，自行計算年增率。"""
+    try:
+        text = _get("https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL")
+        pts = [(d, float(v)) for d, v in csv.reader(io.StringIO(text)) if d[:1].isdigit() and v not in ("", ".")]
+        d1, v1 = pts[-1]
+        _, v0 = pts[-13]
+        _, vp = pts[-2]
+        _, vp0 = pts[-14]
+        yoy, prev_yoy = (v1 / v0 - 1) * 100, (vp / vp0 - 1) * 100
+        m = int(d1[5:7])
+        rows_by_id["us_cpi"] = {
+            "id": "us_cpi", "group": "利率與央行", "name": f"美國CPI年增率（{m}月）", "value": round(yoy, 1), "unit": "%",
+            "change": round((yoy - prev_yoy) * 100), "change_unit": "bp", "as_of": d1,
+            "signal": "red" if yoy >= 4 else "yellow" if yoy >= 3 else "green",
+            "note": "通膨越高，聯準會越難降息；3%以上屬偏高",
+            "source_name": "FRED", "source_url": "https://fred.stlouisfed.org/series/CPIAUCSL"}
+    except Exception as e:
+        print(f"CPI 更新失敗，保留舊值：{e}", file=sys.stderr)
+
+
+def fetch_ftw(rows_by_id):
+    """富台指（SGX 富時台灣指數期貨近月）：Yahoo 沒有這個商品，改從 HiStock 網頁讀取報價（盡力而為，抓不到就保留舊值）。"""
+    import re
+    url = "https://histock.tw/index-tw/TWN"
+    try:
+        html = _get(url)
+        text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S)
+        text = re.sub(r"<[^>]+>", " ", text)
+        text = re.sub(r"&nbsp;|\s+", " ", text)
+        i = text.find("富台期")
+        m = re.search(r"([\d,]{3,}\.\d+)\s*([▲▼△▽+\-])\s*([\d,.]+)\s*([▲▼△▽+\-])?\s*([\d.]+)\s*%", text[max(i, 0):])
+        if not m:
+            raise ValueError("找不到報價格式")
+        value = float(m.group(1).replace(",", ""))
+        sign = -1 if m.group(2) in "▼▽-" else 1
+        pct = sign * float(m.group(5))
+        old = rows_by_id.get("twii", {})
+        rows_by_id["ftw"] = {
+            "id": "ftw", "group": "股市", "name": "富台指（SGX）", "value": round(value, 2), "unit": "點",
+            "change": round(pct, 2), "change_unit": "%", "as_of": datetime.now(TW).strftime("%Y-%m-%d"),
+            "signal": old.get("signal") or signal_for("twii", value, pct, None),
+            "note": "新加坡交易所的富時台灣指數期貨（近月），外資避險主要工具；台股收盤後與夜間仍交易，可預先反映台股方向",
+            "source_name": "HiStock嗨投資", "source_url": url}
+    except Exception as e:
+        print(f"富台指更新失敗，保留舊值：{e}", file=sys.stderr)
+
+
+def main():
+    ind_path = DATA / "indicators.json"
+    old = json.loads(ind_path.read_text(encoding="utf-8"))["rows"]
+    rows_by_id = {r["id"]: r for r in old}
+    order = [r["id"] for r in old]
+
+    fetch_yahoo(rows_by_id)
+    fetch_fred(rows_by_id)
+    fetch_cpi(rows_by_id)
+    fetch_ftw(rows_by_id)
+
+    for i in list(YAHOO) + list(FRED):
+        if i not in order:
+            order.append(i)
+    if "ftw" in rows_by_id and "ftw" not in order:  # 富台指排在台股加權後面
+        order.insert(order.index("twii") + 1 if "twii" in order else len(order), "ftw")
+    rows = [rows_by_id[i] for i in order if i in rows_by_id]
+    for r in rows:
+        for k in ("value", "change"):
+            if isinstance(r.get(k), float) and not math.isfinite(r[k]):
+                r[k] = None
+    ind_path.write_text(json.dumps({"rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    news_path = DATA / "headlines.json"
+    old_news = json.loads(news_path.read_text(encoding="utf-8"))["rows"]
+    news_path.write_text(json.dumps({"rows": fetch_news(old_news)}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    try:
+        update_calendar()
+    except Exception as e:
+        print(f"行事曆更新失敗：{e}", file=sys.stderr)
+
+    (DATA / "meta.json").write_text(json.dumps(
+        {"updated_at": datetime.now(TW).strftime("%Y-%m-%d %H:%M")}, ensure_ascii=False), encoding="utf-8")
+    print("更新完成")
+
+
+if __name__ == "__main__":
+    main()
