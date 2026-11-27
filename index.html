@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="市場風險">
@@ -23,6 +23,8 @@
     --bad: #e8705c; --warn: #e0a84a; --ok: #5fbf85; --hol: #7aa5ec; }
 }
 * { box-sizing: border-box; min-width: 0; }
+/* 點兩下不放大（iPhone 雙擊縮放） */
+html, body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 "Inter", "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif; font-feature-settings: "tnum"; }
 .wrap { max-width: 1080px; margin: 0 auto; padding: 14px 14px 40px; display: flex; flex-direction: column; gap: 20px; }
 h1 { font-weight: 700; font-size: 20px; margin: 0; letter-spacing: .02em; }
@@ -62,6 +64,7 @@ button:disabled { opacity: .6; cursor: default; }
 .eq-date { text-align: right; font-size: 12px; color: var(--muted); }
 .eq-price { text-align: right; font-weight: 600; }
 .eq-row .chg { text-align: right; font-size: 14px; }
+.tog { cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
 .track { height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
 .fill { display: block; height: 100%; border-radius: 4px; }
 .fill.down { background: var(--bad); } .fill.up { background: var(--ok); }
@@ -163,7 +166,7 @@ summary { cursor: pointer; color: var(--fg); }
 
   <section>
     <h2>主要股市</h2>
-    <div class="eq-row eq-head"><span>指數</span><span>最新價格</span><span>漲跌</span><span class="eq-sp"></span></div>
+    <div class="eq-row eq-head"><span>指數</span><span>最新價格</span><span id="eq-chg-head" class="tog">漲跌% ⇄</span><span class="eq-sp"></span></div>
     <div id="eq"></div>
   </section>
 
@@ -228,6 +231,19 @@ const chg = (r) => {
   const t = c === null ? '' : (c > 0 ? '+' : '') + (r.change_unit === '%' ? c.toFixed(2) : String(c)) + (r.change_unit || '');
   return mk('span', 'chg ' + (c === null || c === 0 ? 'flat' : c < 0 ? 'down' : 'up'), t);
 };
+// 漲跌點數：由最新價與漲跌幅反推（前收 = 最新價 ÷ (1 + 漲跌幅)）
+const chgPoints = (r) => {
+  if (r.change_pt !== undefined && r.change_pt !== null && isFinite(Number(r.change_pt))) return Number(r.change_pt); // 程式直接算好的點數最準
+  const v = Number(r.value), c = Number(r.change);
+  if (r.change_unit !== '%' || r.change === null || r.change === undefined || r.change === '' || !isFinite(v) || !isFinite(c)) return null;
+  return v - v / (1 + c / 100);
+};
+const eqChg = (r) => {
+  if (!chgPt) return chg(r);
+  const p = chgPoints(r); if (p === null) return chg(r);
+  const t = (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p).toLocaleString('en-US', { minimumFractionDigits: Math.abs(p) < 100 ? 2 : 0, maximumFractionDigits: Math.abs(p) < 100 ? 2 : 0 });
+  return mk('span', 'chg ' + (Math.abs(p) < 1e-9 ? 'flat' : p < 0 ? 'down' : 'up'), t);
+};
 const fetchJSON = (p) => fetch(p + '?t=' + Date.now()).then((r) => { if (!r.ok) throw new Error(p); return r.json(); });
 const getJSON = (p) => fetchJSON(p);
 const daysUntil = (s) => {
@@ -238,6 +254,7 @@ const daysUntil = (s) => {
 const twNow = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(5, 16).replace('T', ' ').replace('-', '/');
 const fail = (id, msg) => $(id).replaceChildren(mk('p', 'empty', msg));
 
+let chgPt = false; try { chgPt = localStorage.getItem('chgMode') === 'pt'; } catch (e) {}
 let IND = [], CAL = [], NEWS = [], filter = 'alert', allCal = false, allNews = false, REF = '', calFilter = 'key';
 // 重要程度：calendar.json 可用 "importance": "critical"（最重要，紅色）/ "high"（重要）/ "normal"（一般）指定，否則依關鍵字判斷
 const CRIT_EVENT = /FOMC|非農|台指期|富台指|美股四巫|日銀/;
@@ -283,6 +300,7 @@ function drawSummary() {
 
 function drawEq() {
   const box = $('eq'); box.replaceChildren();
+  $('eq-chg-head').textContent = chgPt ? '漲跌點 ⇄' : '漲跌% ⇄';
   const rows = IND.filter((r) => r.group === '股市').sort((a, b) => Number(a.change ?? 0) - Number(b.change ?? 0));
   if (!rows.length) return box.appendChild(mk('p', 'empty', '沒有股市資料'));
   const maxAbs = Math.max(1, ...rows.map((r) => Math.abs(Number(r.change) || 0)));
@@ -291,7 +309,8 @@ function drawEq() {
     const row = mk('div', 'eq-row' + (isStale(r) ? ' stale' : ''));
     const track = mk('span', 'track'); track.setAttribute('aria-hidden', 'true');
     const f = mk('span', 'fill ' + (c < 0 ? 'down' : 'up')); f.style.width = (Math.abs(c) / maxAbs * 100) + '%'; track.append(f);
-    row.append(nameWithDate('eq-name', r), mk('span', 'eq-price', fmt(r.value)), chg(r), track);
+    const c2 = eqChg(r); c2.classList.add('tog'); c2.title = '點一下切換漲跌幅／漲跌點';
+    row.append(nameWithDate('eq-name', r), mk('span', 'eq-price', fmt(r.value)), c2, track);
     box.appendChild(row);
   });
 }
@@ -419,6 +438,12 @@ function loadAll() {
 })();
 
 $('reload').addEventListener('click', loadAll);
+// 點「漲跌」欄（或欄名）切換 漲跌% ／ 漲跌點，記住選擇
+document.querySelector('.eq-head').parentNode.addEventListener('click', (e) => {
+  if (!e.target.closest('.tog')) return;
+  chgPt = !chgPt; try { localStorage.setItem('chgMode', chgPt ? 'pt' : 'pct'); } catch (err) {}
+  drawEq();
+});
 
 // App 圖示：選擇後記在這台手機的瀏覽器裡；iPhone 主畫面圖示是在「加入主畫面」那一刻決定的，所以換圖示要在 Safari 選好再重新加入
 (() => {
