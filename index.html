@@ -88,6 +88,7 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .cal a:hover { text-decoration: underline; }
 .why { display: none; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .cal tr { cursor: pointer; }
+.result { font-size: 13px; margin-top: 2px; font-variant-numeric: tabular-nums; }
 .nums { font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
 .lab { color: var(--muted); }
 .fc { font-weight: 600; }
@@ -156,6 +157,7 @@ summary { cursor: pointer; color: var(--fg); }
         <option value="key">只看重要</option>
         <option value="">全部事件</option>
         <option value="detail">詳細（全部＋說明）</option>
+        <option value="past">過去一週（含結果）</option>
       </select>
     </div>
     <div id="cal"></div>
@@ -292,9 +294,13 @@ function drawCal() {
   const box = $('cal'); box.replaceChildren();
   const upcoming = CAL.slice().sort((a, b) => String(a.date + a.tw_time).localeCompare(String(b.date + b.tw_time)))
     .filter((r) => { const n = daysUntil(r.date); return n === null || n >= 0; });
-  const detail = calFilter === 'detail';
-  const all = calFilter === 'key' ? upcoming.filter(isKeyEvent) : upcoming;
-  if (!all.length) return box.appendChild(mk('p', 'empty', calFilter === 'key' ? '近期沒有重要事件' : '近期沒有排定的事件'));
+  const past = calFilter === 'past';
+  const detail = calFilter === 'detail' || past;
+  const all = past
+    ? CAL.filter((r) => { const n = daysUntil(r.date); return n !== null && n < 0 && n >= -7; })
+        .sort((a, b) => String(b.date + b.tw_time).localeCompare(String(a.date + a.tw_time)))
+    : calFilter === 'key' ? upcoming.filter(isKeyEvent) : upcoming;
+  if (!all.length) return box.appendChild(mk('p', 'empty', past ? '過去一週沒有事件紀錄' : calFilter === 'key' ? '近期沒有重要事件' : '近期沒有排定的事件'));
   const WD = '日一二三四五六';
   const table = mk('table', 'cal'); const tb = mk('tbody'); table.append(tb);
   (allCal || detail ? all : all.slice(0, 5)).forEach((r) => {
@@ -304,12 +310,13 @@ function drawCal() {
     const key = isKeyEvent(r);
     const tr = mk('tr', (key ? 'keyev' : '') + (detail ? ' open' : ''));
     const t = mk('td', 't'); t.append(mk('b', '', md(r.date) + wd), document.createTextNode(r.tw_time || ''));
-    const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n + '天');
+    const cd = mk('td', 'n' + (n === 0 ? ' today' : n !== null && n > 0 && n <= 3 ? ' soon' : ''), n === null ? '—' : n === 0 ? '今天' : n < 0 ? (-n) + '天前' : n + '天');
     const body = mk('td'); const ev = mk('div', 'event' + (eventLevel(r) === 'critical' ? ' crit' : eventLevel(r) === 'holiday' ? ' hol' : ''));
     if (key && calFilter !== 'key') { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
     if (r.region) ev.append(mk('span', 'tag', r.region));
     ev.append(link(r.source_url, r.event || ''));
     body.append(ev);
+    if (r.result) { const res = mk('div', 'result'); res.append(mk('span', 'lab', '結果 '), mk('b', '', r.result)); body.append(res); }
     if (r.prev || r.forecast) {
       const nums = mk('div', 'nums');
       if (r.prev) nums.append(mk('span', 'lab', '前值 '), mk('span', '', r.prev));
@@ -330,7 +337,7 @@ function drawCal() {
     const b = mk('button', 'more', allCal ? '收起' : `顯示全部 ${all.length} 項`); b.type = 'button';
     b.addEventListener('click', () => { allCal = !allCal; drawCal(); }); row.append(b);
   }
-  if (calFilter === 'key' && hidden > 0) {
+  if (calFilter === 'key' && hidden > 0 && !past) {
     const b = mk('button', 'more', `另有 ${hidden} 項一般事件`); b.type = 'button';
     b.addEventListener('click', () => { calFilter = ''; $('calfilter').value = ''; drawCal(); }); row.append(b);
   }

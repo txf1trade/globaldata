@@ -1,6 +1,16 @@
 {
  "rows": [
   {
+   "id": "gdp_pce_nov",
+   "date": "2026-11-25",
+   "tw_time": "21:30",
+   "region": "美國",
+   "event": "GDP＋10月PCE",
+   "why": "通膨高於預期＝偏熱，12月升息幾成定局",
+   "source_url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-november-25-dow-sp-500-nasdaq-pce-inflation-data-091428237.html",
+   "result": "核心PCE年增3.3%、PCE年增3.8%；Q3 GDP上修至年化4.3%"
+  },
+  {
    "id": "thanksgiving",
    "date": "2026-11-26",
    "tw_time": "全日",

@@ -519,8 +519,9 @@ def update_calendar():
     except Exception:
         rows = []
     today = datetime.now(TW).date()
-    keep = [r for r in rows if not str(r.get("id", "")).startswith("auto_")
-            and str(r.get("date", "")) >= (today - timedelta(days=2)).isoformat()]
+    # 保留過去一週的事件（含自動產生的結算日、休市日），供「過去一週」檢視；未來的自動事件每次重新產生
+    keep = [r for r in rows if str(r.get("date", "")) >= (today - timedelta(days=8)).isoformat()
+            and (not str(r.get("id", "")).startswith("auto_") or str(r.get("date", "")) < today.isoformat() or r.get("result"))]
 
     def dup(e):
         key = next((k for k in DUP_KEYS if k in e["event"]), None)
