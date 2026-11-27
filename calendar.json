@@ -16,7 +16,8 @@
    "region": "日本",
    "event": "11月東京CPI",
    "why": "日本通膨領先指標，影響日銀12月是否升息",
-   "source_url": "https://pro.thestreet.com/market-commentary/the-week-ahead-time-for-a-bounce"
+   "source_url": "https://pro.thestreet.com/market-commentary/the-week-ahead-time-for-a-bounce",
+   "guide": "日本通膨領先指標；高於預估＝日銀12月升息機率提高，日圓走強"
   },
   {
    "id": "auto_sgx_202611",
@@ -43,7 +44,8 @@
    "region": "美國",
    "event": "10月JOLTS職缺",
    "why": "判斷勞動市場是否降溫",
-   "source_url": "https://fedratecalc.com/us-economic-calendar/"
+   "source_url": "https://fedratecalc.com/us-economic-calendar/",
+   "guide": "職缺比前值減少＝勞動市場降溫（有助通膨回落）；明顯增加＝勞動市場仍緊，升息壓力"
   },
   {
    "id": "ism_mfg",
@@ -52,7 +54,8 @@
    "region": "美國",
    "event": "11月ISM製造業指數",
    "why": "景氣榮枯線50上下，反映製造業是否轉弱",
-   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/",
+   "guide": "50以上＝擴張、50以下＝收縮；物價分項高於60代表通膨壓力仍大"
   },
   {
    "id": "ism_svc",
@@ -61,7 +64,8 @@
    "region": "美國",
    "event": "11月ISM服務業指數",
    "why": "服務業物價分項是Fed關注的通膨線索",
-   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/",
+   "guide": "50以上＝擴張、50以下＝收縮；物價分項高於60代表通膨壓力仍大"
   },
   {
    "id": "nfp",
@@ -69,8 +73,11 @@
    "tw_time": "21:30",
    "region": "美國",
    "event": "11月非農就業報告",
-   "why": "就業太強→升息壓力；太弱→衰退疑慮",
-   "source_url": "https://fedratecalc.com/us-economic-calendar/"
+   "why": "10月大增16.5萬遠超預期，帶動12月升息預期；11月若再度強勁，1月續升息機率上升",
+   "source_url": "https://fedratecalc.com/us-economic-calendar/",
+   "prev": "+16.5萬（失業率4.1%）",
+   "forecast": "+8.2萬",
+   "guide": "新增就業高於預估且超過+10萬＝偏強，升息壓力加大；0～+5萬＝持平（目前就業損益平衡約+0.5萬人）；負值或失業率升破4.3%＝偏弱，衰退疑慮升高"
   },
   {
    "id": "fomc",
@@ -78,8 +85,11 @@
    "tw_time": "03:00",
    "region": "美國",
    "event": "FOMC利率決議",
-   "why": "美東12/8–9會議；市場押注升息1碼，看點陣圖與2027年升息路徑",
-   "source_url": "https://admiralmarkets.com/analytics/traders-blog/fed-rate-decision-december-2026-preview"
+   "why": "美東12/8–9會議；看點陣圖與2027年升息路徑，市場估1月再升息機率約四到六成",
+   "source_url": "https://admiralmarkets.com/analytics/traders-blog/fed-rate-decision-december-2026-preview",
+   "prev": "3.75–4.00%",
+   "forecast": "升1碼至4.00–4.25%（機率約98%）",
+   "guide": "照預期升1碼＝影響有限；升2碼或暗示明年多次升息＝偏鷹，股市承壓；不升息或語氣轉鴿＝利多股市"
   },
   {
    "id": "auto_krquad_202612",
@@ -96,8 +106,11 @@
    "tw_time": "21:30",
    "region": "美國",
    "event": "11月CPI",
-   "why": "通膨是否降溫，決定後續升息次數",
-   "source_url": "https://marketupdate.net/us-economic-calendar/"
+   "why": "FOMC決議後隔天公布，決定2027年初升息次數",
+   "source_url": "https://marketupdate.net/us-economic-calendar/",
+   "prev": "10月月增0.4%、核心0.3%",
+   "forecast": "年增約3.6%（預測市場中位數）",
+   "guide": "看核心CPI月增：0.2%以下＝降溫（利多股市）；0.3%＝偏熱；0.4%以上＝過熱，升息壓力加大。公布值高於預估通常不利股市"
   },
   {
    "id": "auto_sq_202612",
@@ -115,7 +128,8 @@
    "region": "美國",
    "event": "11月PPI",
    "why": "生產端物價，通膨領先指標",
-   "source_url": "https://www.smartcalendars.ai/en/feeds/us-economic-calendar"
+   "source_url": "https://www.smartcalendars.ai/en/feeds/us-economic-calendar",
+   "guide": "生產端物價，月增0.2%以下＝溫和；0.4%以上＝成本壓力升溫，之後可能轉嫁到CPI"
   },
   {
    "id": "auto_txf_202612",
@@ -133,7 +147,8 @@
    "region": "美國",
    "event": "11月零售銷售",
    "why": "消費是否在股災後降溫",
-   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/",
+   "guide": "月增高於0.5%＝消費強勁，升息壓力；0以下＝消費轉弱，景氣放緩"
   },
   {
    "id": "boe_dec",
@@ -142,7 +157,8 @@
    "region": "英國",
    "event": "英國央行利率決議",
    "why": "主要央行同步緊縮與否，影響全球債市",
-   "source_url": "https://www.financecalendar.com/events/month/2026-12/"
+   "source_url": "https://www.financecalendar.com/events/month/2026-12/",
+   "guide": "升息或偏鷹＝全球利率維持高檔；降息或轉鴿＝英鎊走弱"
   },
   {
    "id": "ecb_dec",
@@ -151,7 +167,8 @@
    "region": "歐元區",
    "event": "歐洲央行利率決議",
    "why": "歐洲利率方向影響美元與全球債市資金流向",
-   "source_url": "https://www.financecalendar.com/event/ecb-rate-decision-december-2026/"
+   "source_url": "https://www.financecalendar.com/event/ecb-rate-decision-december-2026/",
+   "guide": "升息或偏鷹＝全球利率維持高檔；降息或轉鴿＝美元相對走強"
   },
   {
    "id": "auto_quad_202612",
@@ -169,7 +186,8 @@
    "region": "日本",
    "event": "日銀利率決議",
    "why": "12/17–18會議；日本升息可能引發日圓套利交易平倉，衝擊全球流動性",
-   "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm"
+   "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm",
+   "guide": "升息＝日圓走強，可能引發日圓套利交易平倉、全球股市賣壓；按兵不動＝日圓偏弱、壓力暫緩"
   },
   {
    "id": "gdp_pce_dec",
@@ -178,7 +196,9 @@
    "region": "美國",
    "event": "第3季GDP三估＋11月PCE",
    "why": "年底前最後一份重要通膨數據",
-   "source_url": "https://www.financecalendar.com/event/us-personal-income-and-outlays-pce-december-2026/"
+   "source_url": "https://www.financecalendar.com/event/us-personal-income-and-outlays-pce-december-2026/",
+   "prev": "10月核心PCE年增3.3%",
+   "guide": "Fed最看重的通膨指標，目標2%。核心PCE月增0.2%以下＝降溫；0.3%以上＝偏熱，支持續升息"
   },
   {
    "id": "auto_early_2026-12-24",

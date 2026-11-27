@@ -88,6 +88,11 @@ select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px; 
 .cal a:hover { text-decoration: underline; }
 .why { display: none; font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
 .cal tr { cursor: pointer; }
+.nums { font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.lab { color: var(--muted); }
+.fc { font-weight: 600; }
+.guide { margin-top: 4px; padding: 6px 8px; border-left: 3px solid var(--line); background: var(--panel); border-radius: 4px; color: var(--fg); }
+.guide b { font-weight: 600; }
 .cal tr.open .why { display: block; }
 .hint { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 6px; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-right: 6px; white-space: nowrap; font-weight: 400; }
@@ -304,8 +309,17 @@ function drawCal() {
     if (key && calFilter !== 'key') { const st = mk('span', 'star', '★'); st.title = '重要'; ev.append(st); }
     if (r.region) ev.append(mk('span', 'tag', r.region));
     ev.append(link(r.source_url, r.event || ''));
-    const why = mk('div', 'why', r.why || ''); why.title = r.why || '';
-    body.append(ev, why);
+    body.append(ev);
+    if (r.prev || r.forecast) {
+      const nums = mk('div', 'nums');
+      if (r.prev) nums.append(mk('span', 'lab', '前值 '), mk('span', '', r.prev));
+      if (r.prev && r.forecast) nums.append(mk('span', 'lab', '　｜　'));
+      if (r.forecast) nums.append(mk('span', 'lab', '預估 '), mk('span', 'fc', r.forecast));
+      body.append(nums);
+    }
+    const why = mk('div', 'why', r.why || '');
+    if (r.guide) { const g = mk('div', 'guide'); g.append(mk('b', '', '怎麼看：'), document.createTextNode(r.guide)); why.append(g); }
+    body.append(why);
     tr.addEventListener('click', (e) => { if (e.target.tagName !== 'A') tr.classList.toggle('open'); });
     tr.append(t, cd, body); tb.appendChild(tr);
   });

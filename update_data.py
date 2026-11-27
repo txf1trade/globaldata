@@ -442,6 +442,73 @@ def holiday_events(days_ahead=45):
     return out
 
 
+# ---------- 數據事件的「怎麼看」與前值 ----------
+GUIDES = [
+    ("東京CPI", "日本通膨領先指標；高於預估＝日銀12月升息機率提高，日圓走強"),
+    ("會議紀錄", "內容偏鷹（多數委員支持續升息）＝股市承壓；偏鴿（討論暫停升息）＝利多"),
+    ("非農", "新增就業高於預估且超過+10萬＝偏強，升息壓力加大；0～+5萬＝持平（目前就業損益平衡約+0.5萬人）；負值或失業率升破4.3%＝偏弱，衰退疑慮升高"),
+    ("CPI", "看核心CPI月增：0.2%以下＝降溫（利多股市）；0.3%＝偏熱；0.4%以上＝過熱，升息壓力加大。公布值高於預估通常不利股市"),
+    ("PCE", "Fed最看重的通膨指標，目標2%。核心PCE月增0.2%以下＝降溫；0.3%以上＝偏熱，支持續升息"),
+    ("PPI", "生產端物價，月增0.2%以下＝溫和；0.4%以上＝成本壓力升溫，之後可能轉嫁到CPI"),
+    ("JOLTS", "職缺比前值減少＝勞動市場降溫（有助通膨回落）；明顯增加＝勞動市場仍緊，升息壓力"),
+    ("ISM", "50以上＝擴張、50以下＝收縮；物價分項高於60代表通膨壓力仍大"),
+    ("零售", "月增高於0.5%＝消費強勁，升息壓力；0以下＝消費轉弱，景氣放緩"),
+    ("FOMC", "照預期升1碼＝影響有限；升2碼或暗示明年多次升息＝偏鷹，股市承壓；不升息或語氣轉鴿＝利多股市"),
+    ("日銀", "升息＝日圓走強，可能引發日圓套利交易平倉、全球股市賣壓；按兵不動＝日圓偏弱、壓力暫緩"),
+    ("歐洲央行", "升息或偏鷹＝全球利率維持高檔；降息或轉鴿＝美元相對走強"),
+    ("英國央行", "升息或偏鷹＝全球利率維持高檔；降息或轉鴿＝英鎊走弱"),
+
+]
+
+def guide_for(event):
+    for key, text in GUIDES:
+        if key in event:
+            return text
+    return ""
+
+
+def _fred_series(series):
+    text = _get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}")
+    return [(d, float(v)) for d, v in csv.reader(io.StringIO(text)) if d[:1].isdigit() and v not in ("", ".")]
+
+
+def latest_prev_values():
+    """從 FRED 算出最新一期的 CPI 月增、核心 CPI 月增、非農新增與失業率，當作「前值」。"""
+    out = {}
+    try:
+        cpi, core = _fred_series("CPIAUCSL"), _fred_series("CPILFESL")
+        m = int(cpi[-1][0][5:7])
+        out["CPI"] = f"{m}月月增{(cpi[-1][1] / cpi[-2][1] - 1) * 100:.1f}%、核心{(core[-1][1] / core[-2][1] - 1) * 100:.1f}%"
+    except Exception as e:
+        print(f"CPI 前值計算失敗：{e}", file=sys.stderr)
+    try:
+        pay, ur = _fred_series("PAYEMS"), _fred_series("UNRATE")
+        m = int(pay[-1][0][5:7])
+        chg = (pay[-1][1] - pay[-2][1]) / 10  # 千人 → 萬人
+        out["非農"] = f"{m}月{chg:+.1f}萬（失業率{ur[-1][1]:.1f}%）"
+    except Exception as e:
+        print(f"非農前值計算失敗：{e}", file=sys.stderr)
+    return out
+
+
+def enrich_events(rows):
+    """替還沒有「怎麼看」的數據事件補上判斷標準；CPI、非農補上前值。手動填的內容一律保留。"""
+    prev = None
+    for r in rows:
+        ev = str(r.get("event", ""))
+        if not r.get("guide"):
+            g = guide_for(ev)
+            if g:
+                r["guide"] = g
+        key = "CPI" if ("CPI" in ev and r.get("region") == "美國") else "非農" if "非農" in ev else None
+        if key and not r.get("prev"):
+            if prev is None:
+                prev = latest_prev_values()
+            if prev.get(key):
+                r["prev"] = prev[key]
+    return rows
+
+
 DUP_KEYS = ("結算", "四巫", "SQ", "FOMC", "CPI", "非農", "休市", "提前收盤")
 
 
@@ -462,6 +529,7 @@ def update_calendar():
 
     auto = settlement_events() + econ_events() + holiday_events()
     rows = keep + [e for e in auto if not dup(e)]
+    rows = enrich_events(rows)
     rows.sort(key=lambda r: (r.get("date", ""), r.get("tw_time", "")))
     path.write_text(json.dumps({"rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
 
