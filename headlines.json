@@ -1,6 +1,22 @@
 {
  "rows": [
   {
+   "id": "n8",
+   "date": "2026-11-27",
+   "topic": "聯準會",
+   "title": "美股下跌可能阻止不了 Fed 於12月再度升息",
+   "source_name": "經濟日報",
+   "source_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1PdTNYcTBEQXI0U1hGVTZkeUprenRVclEwczNmODZkOURja2VFQjRkUFBvdTVTeS1saF9fT2Yta01HcVlvUFN5SThsazI0WkNkMUdSQkcyaF9oYk9I0gFiQVVfeXFMUEQtbnExbXN0ZnlEcE9iTS1kTmdDbnRUS2dCTl9rU3VRSzQ1Q2ZzU21Fb1lHcFRoRmFYVjZjYTNqX29HVEtUd3BxZjYzM0NtZXI4Y1FfNVlGTkZTSjlWbzJBbVE?oc=5"
+  },
+  {
+   "id": "n9",
+   "date": "2026-11-27",
+   "topic": "美債殖利率",
+   "title": "美債殖利率大漲 外資為何還在買？",
+   "source_name": "工商時報",
+   "source_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9pT082NUNETWdoU2JKVnJFbFJLQmdUeGJGc0xRNUt4NGJ0V2ZIQmNpTG9uNTF6Zi05WWhTVTRuRFM5T19OT3RHVXJMSHFHV1F3N0VBUjlobTFtNzZ1aFAw?oc=5"
+  },
+  {
    "id": "n1",
    "date": "2026-11-26",
    "topic": "全球股市",
@@ -9,12 +25,28 @@
    "source_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFB2ZHlNQnN1YnptU0ZfOERzRmFjYnBsRm5HSndPVzdSckVXdzFEX21NU2hQVmgwYWQ5VkhqZVFuaFNJWXBPNFQ0cWdIaUlqbHdTU3VxdnlNVWM3Nnoz0gFiQVVfeXFMUDVxdG1ZSm54M3N2dmdwazhtSFVRMUhCZmNtbUxkc0Y5Qm5xN1J5SFd2eGlZZWJJVm01LUhoeTlsZk5uQ1N2OWRRamtaOF9EQ1RVeUFrakdvakFSakYtaGZmaWc?oc=5"
   },
   {
-   "id": "n10",
+   "id": "n3",
+   "date": "2026-11-26",
+   "topic": "全球股市",
+   "title": "全球流動性週期2025年底觸頂 策略師示警股市恐一路艱困到2027年上半",
+   "source_name": "BigGo 財經",
+   "source_url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFBQVnFPaHVSZHg4QnJQcXZVMnI2QVI1dDU4Qm1rcHZwTHhWcGotMXRkMGNvRlBnNmhXR1pCZEk3X0ZBRTRJaUxYWnpHNng2WkZ3TlROaTRMMG01eGdBYWZkU0dhR1hLNFBVa05pYmM2ZnIySHZDQXN1azdn?oc=5"
+  },
+  {
+   "id": "n6",
+   "date": "2026-11-26",
+   "topic": "聯準會",
+   "title": "別指望聯準會出手救市？Fed傳聲筒：AI股暴跌拉高升息門檻 華許陷政策兩難",
+   "source_name": "鉅亨網",
+   "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFAzZlZOZDRCNnRUczg2cVlFRzhrTDJDTHpERHZpUHJEekQ5azVUYlhFQl9RWkNSdS1ueU1ZTWRhNllTVXlTUjNUR1QzdnZSSFU?oc=5"
+  },
+  {
+   "id": "n11",
    "date": "2026-11-26",
    "topic": "美債殖利率",
-   "title": "美債殖利率走高迎布局契機- 日報",
-   "source_name": "工商時報",
-   "source_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBkaVhNWFl0RjVKZ09kUEk0ckljay1HckpmY0ExSElXM3ZhS0hBanFIVlFZZ21IVFQ3Rzk1NVJzX2FnTnVHRXExSHlpX0g0YWpWeVJaYktsVzY1NmF5dG8w?oc=5"
+   "title": "《美債》避險買盤湧入 10年債殖利率跌破4.9%",
+   "source_name": "MoneyDJ",
+   "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQLVdsY1J6ZnJUdjdQempEbHhRbHpiRW9vUzBOU3pObVlqQ3RtZ2pJdnRNWnJwNE1nSHNITFVocFJSR1RLQ0VpX2ZHZEttaWhoanNOcGlpY05pZjc0Qk9qMTg0M1JqYzYxSV9nZUM5clpIZjhzU09lWFh6QUo3a3NJSFptbFBETGVOaTdBX0IzMjNSQQ?oc=5"
   },
   {
    "id": "n12",
@@ -25,7 +57,7 @@
    "source_url": "https://news.google.com/rss/articles/CBMi7gNBVV95cUxQT0k1QWJiZXVvWG5LQ2gtZlBRZWt6aXhpV1Y5RURYNFlaM1Bwa3l1VTI4VlUwREowZUdDYW1rdEU2bjRFTHIwY3Zva3JqYks3NFc2OFhLX1k4b0xmTnFDby1vYWR3ZXFvNUdfUkRzaDh4RGg5S3dmVkZ4QUxzZ1lpTEZoeHp3WkRUT1pYRWZ1RkdTN0thelBTMVZDdGNnU2VtSUtFNjdvVWxrcm5JZWRXOUhvTGhjbGFvOVNqbXc2WFNkNElOVDJwd0MzV1NZTnpzR0FlUTBBQlRNMGNaRnNJUGNqTlRFYzg4NVB0bzFaZ3g3aWR3UWpBOXhiNGhGdXFoa19NYTg3eVllRHBLbFpoVS1DSFBFYUZtcDQtY0hBb1l5TFFJU3pad1prYkZFSGppTHVkV0NZUDdtTFB4Uml2LTlrSXhvQVdpT0NvX3d3M2RlUVR4R0hIU3V5bE0yWV8yVXl2Vi1KVTJLNVdMQmVZYkl5NFV5MWFCbVFKNjBaalotVkFiN05IenRDSTZ3OTNEa2U0eEZNZlMycEplY0VwMldZeUN2UlR3cU9TNHAzbkhycEZ5enVYaHFIVXVyMklGdWo1YWJEb1MtYnMtVjlqSnYtUE0xX0NsOG5fMEVrbUdmalpxcG9hNEVwUXo4Zw?oc=5"
   },
   {
-   "id": "n16",
+   "id": "n15",
    "date": "2026-11-26",
    "topic": "AI",
    "title": "《焦點》AI股拋售愈演愈烈，Anthropic一度低見74美元",
@@ -33,7 +65,15 @@
    "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9vOEpkZmc2MTJ0NmNFNHkwTGhmN1BIRnNBY0hzYmQ2dDR5V2s5bTc1ZmQ1NU9UNUZGVlJMR01aQVhUM1BNVHJMa0UwbGFtdV9WOWZ4T0stdEJjMzVVM1pBLXJQZHdyZVZvY0tsVEd2R3BMZWc4eFQ0?oc=5"
   },
   {
-   "id": "n20",
+   "id": "n16",
+   "date": "2026-11-26",
+   "topic": "AI",
+   "title": "AI股拋售潮反成黃金買點？外媒點名「這2大巨頭」快買進：看好長抱潛力",
+   "source_name": "民視財經網",
+   "source_url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1VbFhmbW9kYk1DdUcxWVVnUXo0QXJacVlEdi02T0twSWlHcTVTTzZFT0VCUlN3NUl4WHZmNzFDR19yckZkRk5va1RybVR3YVZFc3FITGp4Qlk2WUNHN3JTdnB3S0ktdw?oc=5"
+  },
+  {
+   "id": "n19",
    "date": "2026-11-26",
    "topic": "台股",
    "title": "台股收復3萬9關 外資續砍491億、三大法人賣超132.65億元",
@@ -41,60 +81,20 @@
    "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE9GZWd3U3ROb19TajlJanh3Unk4aC1vUzlUMmJlU3Z5QTV1dTdiNWF1UzE3ZER6V29sXzJxREdsaXlhWWtCQkl2d19VVG51U2M?oc=5"
   },
   {
-   "id": "n9",
+   "id": "n5",
    "date": "2026-11-25",
-   "topic": "美債殖利率",
-   "title": "AI概念股強彈推升美債殖利率 美元指數創今年新高",
+   "topic": "聯準會",
+   "title": "聯準會升息衝擊股市？歷史數據顯示一年內多能重拾漲勢",
    "source_name": "Yahoo股市",
-   "source_url": "https://news.google.com/rss/articles/CBMi2wJBVV95cUxPd25XalNvcnJFNVM0WGY2VlBNYzhBTGpTXzBGakhGSVg3NXFoLUtFLXRYTDVENktsZGNJVHNrc2Zid21jaDl4Z1VrZUtldVVGM0JkRm0tTVFLUXJ5STFyY0tCb3d0eC1oR1N6cm9CTzNVQklSb0RWZ3lvelpTanBwM2lIaGtqV0V3WmdISUpvWjg5NkVxem1TY0NHUEU4d1lIRk9mU0poaVliaTdLbGIzZTdHWlFqUzdCaW9SV2dQamdxNzhlNG1heEZFUjQwY0dxUzA2NXFHNEw5cmNEbVNzNmYzc3B1THdlQUMzVmU1ZWNOT2FVSW5YeVNoZFRfNEhKWWpLaVlRTTVmb1IyWmtLWlB3ZDI5M0NlUGlrcm1KenBHNFFXSkpyNTkyb092VEZhWllkalgtQzA5Z0V4LTB4Q25jUDMwUzdXS3pLR3N6dHBGVXZTNC1MLWNRbw?oc=5"
-  },
-  {
-   "id": "n17",
-   "date": "2026-11-25",
-   "topic": "台股",
-   "title": "台股重挫1926點！ 網見外資賣超嘆：就是在逃命很急",
-   "source_name": "Yahoo股市",
-   "source_url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxNV0tKYm5NZzZVRHRQNWx0UGpwUEF4R0NsVmlQUGV6RXI1RURPXzAwSE9KRjZXMG55M1Vudm1tVjljV3FsQnRPa0NPdHZmWFNZaDlRcHloQlNtdWh5ZFY3THRWcGxBazcwMVk2OWM5LUlycFZpeUw3Qll3azRsUjF3endxdlFrMzdaOXVYYzVubFI2WGN5QzlHSXNHS0JoS1Jza1d2UElWNUpMdGlfOVh3eDRjLVVNMnVNRkdLZWVmR3E2Nkg5bkpvai1TVEYzeE1GRXFxa2c1ajUxVF9zclAycDJ3S2VVcXN0NkdmWDhNVTZIbGMtY1BxUmpCcjY0cnRPSG1zUHFWX2Z0QTZIVGk0NFpLYUozVGRCb2JPZXBxUGZ6TW45Uk0zVmUxblRIR1hYU3h5OXVNemFwN3ZjUWR6RmhuQmdBTXc?oc=5"
-  },
-  {
-   "id": "n18",
-   "date": "2026-11-25",
-   "topic": "台股",
-   "title": "三大法人買賣超 – 外資買超(2603)長榮、(2327)國巨*，投信買超(2330)台積電、(3665)貿聯-KY，法人合計賣超829.56億元",
-   "source_name": "永豐金證券",
-   "source_url": "https://news.google.com/rss/articles/CBMizARBVV95cUxOSmwwOE5QZWpFXzhsRG5KYUh6Z0NJejlSdTZJM3FlZHZqTFUtQ2xObngtVDVlUjNKZ2hxTkRsQmJrTzFRcmM5bTVnT3EtSkJIX25xbEhKS3RxYVotRVg1R0dDM3lXR3lja1k4bTFaVFl0c3R5dlR6eHpmVG4zZjJMSUdLNGFwMG9GNldCRkM2UXU3N1JIY3pSRWd4OVZDWDUwVklJOHBWRUkzVnZuN205QndBZFVFa0xGSlRBSU1nOFNQY0J3ZDA1bXhUMFlQNTRpamZfZXAxV1hueVZCVzVLMmdnUmFqdWVuRUcwSkU0N2lLWDhRZTRFSXgyX0VYd3BpOVBQeEpFdmRUSU9kQlpTUEh0bWNkLXB4LXkxTUJ6ekdQclk4YVJpX2ZpdlhhWXpKVG9jdDVYSkQ0ZFlZbWtBbHVobXJCdlVTbTQ0QWQ4UTlKNEVUZkcwa3ZHMk9pTWtPT20yWG5xOTJNdndBUGMtSlhKenVESUw2bGpzNzFuQTlPcngxa2o2S1FGcUZpbDBadGdjZjUwRl9IWUVJZVJIMkFLakhLSVdaakFVS3QwM2FoUkhObnRyb0V1NXlHdHZfOWZLX1hMc0ptV2NveUE0WDU1R243M3hrcHRzb2Ytblp3ME0tWVVOak5VOC12SHdobjNwTmpvbjV4N0F1OUs5dFQ1WU11cnVBa0k0cmJKbjdkV2FDY2ZHRWd6OTU2d2ZtazZ3WGJ2NFJ3SlRZTnQtS0ZSSWtHM1ZMUzhIUTM1cWhSSjdTVE5zNjlHZ2g?oc=5"
-  },
-  {
-   "id": "n19",
-   "date": "2026-11-25",
-   "topic": "台股",
-   "title": "外資殺紅眼！今提款1237億史上第7大",
-   "source_name": "ETtoday財經雲",
-   "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBYU255ZFp0NURYOEIzMmtySWh2QVYzY3NhdzBzQ0RmZGNHdmdTNnlsUWVkeDFxNERNWUdCWmJtNjZTMkhYZVRiQU1fTmNhUzRXS2fSAVBBVV95cUxNWGZlSnkwUmtra1h3TkE2cDZrdGFxUndVQ3BWak1DWkk3eXlzenRPQmFlX0xveHp0QTlJazRMSXFLN295SWFjWVFxbTFxY01PLQ?oc=5"
+   "source_url": "https://news.google.com/rss/articles/CBMi8gJBVV95cUxOcWNMM1l5Q1JySFpPdk5uZzh4Wk44dXVmS2VtZU5iYmFQcnFUX1oxdTFCY004TUtTd1ZhaVRZR0xSV0VDUndxNDZCbmF0NE1TR0ZHaktsRlBSZ1VpeDFXWHpsLTlzVzdXcW02NkZuVXNZYzNnWjc4dHlzdV9OVDlUZGJscGxQVWNxRVp6Vzh5Q1IwbVc5RExkQXkwd1kyb1RjVHhQa1VWQTA3RzNYbDRmWl9CazlNRWRldGlFeFF2T1N2Q2NpNldTQVR1YWZDX2FkN0l4bWhUYVp2dFlTdGV6Q0dUZWtXT05Vdmc2M2E5N0ota2J1T1ZJMHEtYnhoOTJwQi15MzR1UDV6MzUtR0FITThIaGRFNFVzd29heGstSW0wM3otZnRnQWVadW5IeWRvR3BaemFrWUhvcjNETzJ5dkwyWUNZUTlTZXM0cE9VSGVZUnppR3hOeTRRN3pUSjhQeHFIemVsWmlEY1BUZks4OVdR?oc=5"
   },
   {
    "id": "n7",
-   "date": "2026-11-24",
+   "date": "2026-11-25",
    "topic": "聯準會",
-   "title": "貝萊德：2027年美國通膨將趨緩 市場過度高估聯準會升息幅度",
-   "source_name": "鉅亨網",
-   "source_url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE91c1dqQVJVTHdCazJsNWVlNGxPcHl5TlNqdGswRzhXUERJdHJ1WHFnZ2k4N01PRU5wMFJMYTBKdDB5STAtZWdKWEZvdXJmZEE?oc=5"
-  },
-  {
-   "id": "n11",
-   "date": "2026-11-24",
-   "topic": "美債殖利率",
-   "title": "《美債》黃仁勳重掌輝達美股強彈殖利率回升- 新聞",
-   "source_name": "MoneyDJ",
-   "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUozQzd6WVlfUFRlOGZ2bmFLeHZBTVBTNjRySzRncXNfWGdCNFpITW5NTFRDUFI2OFVHNGpyT3NOUFhEd0xVSmFSTHFrbXdPc0htZE5lRkYtS1lvNHBRM2RwWFhCaXBGQ3h1d2wxMDBKQ1JYNzlXS1JadmlST2dHd2tRUW1WSVk3ekVuNUNNTUh1QQ?oc=5"
-  },
-  {
-   "id": "n6",
-   "date": "2026-11-23",
-   "topic": "聯準會",
-   "title": "阻止聯準會升息最快方式！ 美銀：吐回2026年全部漲幅",
-   "source_name": "Yahoo股市",
-   "source_url": "https://news.google.com/rss/articles/CBMi0wJBVV95cUxPbVhLT0l6Q0RHNE91Y2xmSHU0QWkzMTk3bXNsV2NQTTFqanlOOUI2NTJKMjNMT1UwNl9uQkF2cDVfekQ2dUVqWWxVWTlBMS0zclA2RENIUFZyc29TemJjeU9pVTI1VWM3clBKc1lxckZrRWt5cGk5Q2Q2dVkxVjNOV1d4eTdiNzR4ZFpzQ1AwRkFENUhfajBvX1JSXzdUS1kweC1ZU2hqWEg0WTNPaFVqSmVUQWxXWHg0Znotd3R4X041T3J3TkVRVWxVUzNFRHkwN3E3MldpYW9QWVF0NUpyVU5kbXRBYm5RbWlRRDR6OEhOeVRLc3ZTaXY1MkNIblJPRG5pWGhVdi1QVEJ5eHA3QS1jalROTzQzRjJWc25OMGdnZlB5YUlqYWZFcUV3SnZ0M29ycDVCNEZDTXYtNHRwUVhaMGJCMV9WZi1WbkVKUmNZTGs?oc=5"
+   "title": "2026年12月台美股行事曆｜年底關鍵！聚焦FOMC利率決議是否升息、博通與美光財報，6檔台股法說會輪番登場",
+   "source_name": "永豐金證券",
+   "source_url": "https://news.google.com/rss/articles/CBMi5ARBVV95cUxQNGl0b0E3TnhsWHNZVWc3cl9KRGhpUUZmQVFVX293a1o0YnhIRXF3LV9TM1lwbHdsN0JKVXo1R0hmUjlDNVRZT0JfcDFmWklWWHRZNjhRRGM5Ykluc3dlQlNKd0xBcC1YTldlWFp1VGZURHpHamRmU29uMUZvdEJXS1dVNVp2TXctYno1MnZ1MEp2Y3ByUHRHMHlLaDRqSjdrTXhYRmItSklFLTNiSUFUTnZIV0g4eW1DLWV2STRXRFo2Nng4YmZEMnQtajRMSV9YLTVqMEthZlZqdTFwTlZVX0E5bXRnNzRLQnBrWWNzRjJqU0l0N2Zfd0hCWkN5blBrVklmRnY1Xy1zUkFUMXJia3VwTWxyWmNuZGw3bUVJQUFEOVBHM2gxU0NXNE1VMGZxbkpYUVN4YjFrSWo3ZHR2RmNJTHY3Vmx4SGs2cWJCZWlWLUZTbE1ZRHFWYkZZekxQQU92cERfZzQ4c0NGUV9kZTJWaF85S2t2aEFucW1hU1dyNktpN3lGdGxWc0tudGVOTXJRUHFEc2VkR2tJM3BKZDBQSmx6VE9KWHJERUh3bmI5TjBIN3RCUDBXWVZpQXVKMmpBT0Q5ajJUYW5ZV29qU1dGWjhPVUNkOUtRQXZ3SnJ0M3J1aTJnVmVHTjRfYzNxZ2hmbGtWaTlRUFZTZHNxNTZxb0V0c1NFSDJXakdXQ05BYWNaOEFDVEdTdXNVY2dJRlF4QWpWYmgtdlVjWlJBVWdyZjAtTWQ4U0FTRWdycnZ6Sm8yX2xXUDh5dElLYkprLXowMVBHeWFlT2VIenJJNEVQUmo?oc=5"
   }
  ]
 }
