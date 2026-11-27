@@ -2,7 +2,11 @@
 <html lang="zh-TW">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="市場風險">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>全球市場風險監控</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,6 +108,12 @@ ul.news li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--lin
 details { color: var(--muted); font-size: 13px; line-height: 1.7; }
 summary { cursor: pointer; color: var(--fg); }
 .empty { color: var(--muted); font-size: 13px; }
+/* 加到主畫面後的下拉更新 */
+.standalone body { overscroll-behavior-y: contain; }
+.standalone .wrap { padding-top: calc(14px + env(safe-area-inset-top)); }
+#ptr { position: fixed; left: 0; right: 0; top: env(safe-area-inset-top); height: 0; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; font-size: 13px; color: var(--muted); background: var(--bg); z-index: 10; pointer-events: none; }
+#ptr span { padding-bottom: 10px; }
+#ptr.go { transition: height .2s; }
 @media (max-width: 640px) {
   .key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cal tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding: 8px 0; border-bottom: 1px solid var(--line); }
@@ -119,6 +129,7 @@ summary { cursor: pointer; color: var(--fg); }
 </style>
 </head>
 <body>
+<div id="ptr" aria-hidden="true"><span></span></div>
 <div class="wrap">
   <header>
     <div class="head">
@@ -392,6 +403,31 @@ function loadAll() {
 })();
 
 $('reload').addEventListener('click', loadAll);
+
+// 加到 iPhone 主畫面當 App 用時，Safari 沒有下拉重新整理，這裡自己做：在頁面最上方往下拉、放開就更新
+(() => {
+  const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  if (!standalone) return; // 一般瀏覽器本來就能下拉重新整理
+  document.documentElement.classList.add('standalone');
+  const bar = $('ptr'), txt = bar.firstChild, MAX = 90, GO = 60;
+  let y0 = null, d = 0, busy = false;
+  const show = (h, t) => { bar.style.height = h + 'px'; txt.textContent = t; };
+  addEventListener('touchstart', (e) => { if (!busy && scrollY <= 0 && e.touches.length === 1) { y0 = e.touches[0].clientY; d = 0; bar.classList.remove('go'); } }, { passive: true });
+  addEventListener('touchmove', (e) => {
+    if (y0 === null) return;
+    d = e.touches[0].clientY - y0;
+    if (d <= 0 || scrollY > 0) { y0 = null; show(0, ''); return; }
+    const h = Math.min(MAX, d * 0.5);
+    show(h, h >= GO ? '放開更新' : '下拉更新');
+  }, { passive: true });
+  addEventListener('touchend', () => {
+    if (y0 === null) return;
+    y0 = null; bar.classList.add('go');
+    if (Math.min(MAX, d * 0.5) < GO) return show(0, '');
+    busy = true; show(GO - 10, '更新中…');
+    loadAll().finally(() => { show(GO - 10, $('status').textContent.replace(/^·\s*/, '') || '已更新'); setTimeout(() => { show(0, ''); busy = false; }, 700); });
+  });
+})();
 $('filter').addEventListener('change', (e) => { filter = e.target.value; drawList(); });
 $('calfilter').addEventListener('change', (e) => { calFilter = e.target.value; allCal = false; drawCal(); });
 loadAll();
