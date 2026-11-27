@@ -27,6 +27,7 @@ YAHOO = {
     "ixic":   ("^IXIC",    "那斯達克",            "股市", "點", "科技股權重高，最能反映AI題材的資金進出"),
     "sox":    ("^SOX",     "費城半導體",          "股市", "點", "AI晶片股是本輪賣壓核心，台股連動高"),
     "twii":   ("^TWII",    "台股加權",            "股市", "點", "台股高度集中在電子與AI供應鏈"),
+    "otc":    ("^TWOII",   "櫃買指數",            "股市", "點", "中小型股與電子題材股為主，散戶比重高，反映市場投機與資金熱度"),
     "n225":   ("^N225",    "日經225",             "股市", "點", "日本股市；也會受日圓與日銀升息影響"),
     "kospi":  ("^KS11",    "韓股KOSPI",           "股市", "點", "記憶體與半導體權重高"),
     "vix":    ("^VIX",     "VIX恐慌指數",         "恐慌與流動性", "", "30以上屬高度恐慌，代表避險需求急升"),
@@ -131,7 +132,7 @@ def fetch_yahoo(rows_by_id):
                 extra = f"；距一年高點 {drawdown:.1f}%"
             rows_by_id[i] = {
                 "id": i, "group": group, "name": name, "value": value, "unit": unit,
-                "change": change, "change_unit": change_unit, "as_of": as_of,
+                "change": change, "change_unit": change_unit, "change_pt": round(close - prev, 2), "as_of": as_of,
                 "signal": signal_for(i, value, change if change_unit == "%" else None, drawdown),
                 "note": note + extra,
                 "source_name": "Yahoo Finance",
