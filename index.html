@@ -7,6 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="市場風險">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" id="touch-icon" href="icons/icon-3.png">
+<link rel="icon" type="image/png" id="fav-icon" href="icons/icon-3.png">
 <title>全球市場風險監控</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,6 +110,10 @@ ul.news li { padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--lin
 details { color: var(--muted); font-size: 13px; line-height: 1.7; }
 summary { cursor: pointer; color: var(--fg); }
 .empty { color: var(--muted); font-size: 13px; }
+.icons { display: flex; gap: 14px; margin: 8px 0 4px; }
+.icons button { padding: 4px; border-radius: 16px; border: 2px solid transparent; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.icons button img { width: 60px; height: 60px; border-radius: 13px; display: block; }
+.icons button.on { border-color: var(--fg); color: var(--fg); font-weight: 600; }
 /* 加到主畫面後的下拉更新 */
 .standalone body { overscroll-behavior-y: contain; }
 .standalone .wrap { padding-top: calc(14px + env(safe-area-inset-top)); }
@@ -190,6 +196,16 @@ summary { cursor: pointer; color: var(--fg); }
     <h2>近期新聞</h2>
     <ul class="news" id="news"></ul>
   </section>
+
+  <details id="icon-set">
+    <summary>App 圖示設定</summary>
+    <div class="icons" role="radiogroup" aria-label="App 圖示">
+      <button type="button" data-icon="1" role="radio"><img src="icons/icon-1.png" alt="">燈號</button>
+      <button type="button" data-icon="2" role="radio"><img src="icons/icon-2.png" alt="">走勢</button>
+      <button type="button" data-icon="3" role="radio"><img src="icons/icon-3.png" alt="">儀表</button>
+    </div>
+    <p id="icon-tip" style="margin:4px 0 0"></p>
+  </details>
 
   <details>
     <summary>燈號怎麼判斷、資料從哪來</summary>
@@ -403,6 +419,28 @@ function loadAll() {
 })();
 
 $('reload').addEventListener('click', loadAll);
+
+// App 圖示：選擇後記在這台手機的瀏覽器裡；iPhone 主畫面圖示是在「加入主畫面」那一刻決定的，所以換圖示要在 Safari 選好再重新加入
+(() => {
+  const standalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  let cur = '3';
+  try { cur = localStorage.getItem('appIcon') || '3'; } catch (e) {}
+  const apply = (n) => {
+    const src = 'icons/icon-' + n + '.png';
+    $('touch-icon').href = src; $('fav-icon').href = src;
+    document.querySelectorAll('#icon-set [data-icon]').forEach((b) => { const on = b.dataset.icon === n; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+  };
+  const tip = (changed) => {
+    $('icon-tip').textContent = standalone
+      ? '主畫面上的圖示無法在 App 裡直接換：請用 Safari 打開這個網頁，在這裡選好圖示，再「分享 → 加入主畫面」，並刪掉舊的圖示。'
+      : (changed ? '已選好。現在按 Safari 的「分享 → 加入主畫面」，就會用這個圖示（舊的圖示請先刪掉）。' : '選好圖示後，按 Safari 的「分享 → 加入主畫面」。');
+  };
+  apply(cur); tip(false);
+  document.querySelectorAll('#icon-set [data-icon]').forEach((b) => b.addEventListener('click', () => {
+    cur = b.dataset.icon; try { localStorage.setItem('appIcon', cur); } catch (e) {}
+    apply(cur); tip(true);
+  }));
+})();
 
 // 加到 iPhone 主畫面當 App 用時，Safari 沒有下拉重新整理，這裡自己做：在頁面最上方往下拉、放開就更新
 (() => {
