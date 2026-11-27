@@ -557,6 +557,32 @@ def fetch_cpi(rows_by_id):
         print(f"CPI 更新失敗，保留舊值：{e}", file=sys.stderr)
 
 
+def fetch_ftw(rows_by_id):
+    """富台指（SGX 富時台灣指數期貨近月）：Yahoo 沒有這個商品，改從 HiStock 網頁讀取報價（盡力而為，抓不到就保留舊值）。"""
+    import re
+    url = "https://histock.tw/index-tw/TWN"
+    try:
+        html = _get(url)
+        text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S)
+        text = re.sub(r"<[^>]+>", " ", text)
+        text = re.sub(r"&nbsp;|\s+", " ", text)
+        i = text.find("富台期")
+        m = re.search(r"([\d,]{3,}\.\d+)\s*([▲▼△▽+\-])\s*([\d,.]+)\s*([▲▼△▽+\-])?\s*([\d.]+)\s*%", text[max(i, 0):])
+        if not m:
+            raise ValueError("找不到報價格式")
+        value = float(m.group(1).replace(",", ""))
+        sign = -1 if m.group(2) in "▼▽-" else 1
+        pct = sign * float(m.group(5))
+        old = rows_by_id.get("twii", {})
+        rows_by_id["ftw"] = {
+            "id": "ftw", "group": "股市", "name": "富台指（SGX）", "value": round(value, 2), "unit": "點",
+            "change": round(pct, 2), "change_unit": "%", "as_of": datetime.now(TW).strftime("%Y-%m-%d"),
+            "signal": old.get("signal") or signal_for("twii", value, pct, None),
+            "note": "新加坡交易所的富時台灣指數期貨（近月），外資避險主要工具；台股收盤後與夜間仍交易，可預先反映台股方向",
+            "source_name": "HiStock嗨投資", "source_url": url}
+    except Exception as e:
+        print(f"富台指更新失敗，保留舊值：{e}", file=sys.stderr)
+
 
 def main():
     ind_path = DATA / "indicators.json"
@@ -567,10 +593,13 @@ def main():
     fetch_yahoo(rows_by_id)
     fetch_fred(rows_by_id)
     fetch_cpi(rows_by_id)
+    fetch_ftw(rows_by_id)
 
     for i in list(YAHOO) + list(FRED):
         if i not in order:
             order.append(i)
+    if "ftw" in rows_by_id and "ftw" not in order:  # 富台指排在台股加權後面
+        order.insert(order.index("twii") + 1 if "twii" in order else len(order), "ftw")
     rows = [rows_by_id[i] for i in order if i in rows_by_id]
     for r in rows:
         for k in ("value", "change"):
